@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Личный Кабинет</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h1, h2 { text-align: center; color: #333; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #0056b3; }
+        .note { background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #007bff; }
+        .note button { width: auto; background: #dc3545; padding: 6px 12px; font-size: 14px; margin: 0; }
+        .hidden { display: none; }
+        .error { color: red; text-align: center; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="auth-screen">
+        <h1>👋 Добро пожаловать!</h1>
+        <div id="auth-error" class="error"></div>
+        <input type="text" id="username" placeholder="Логин">
+        <input type="password" id="password" placeholder="Пароль">
+        <button onclick="login()">Войти</button>
+        <button onclick="register()" style="background: #28a745; margin-top: 5px;">Зарегистрироваться</button>
+    </div>
+
+    <div id="dashboard-screen" class="hidden">
+        <h2>Личный кабинет</h2>
+        <p style="text-align: center;">Привет, <strong id="user-display"></strong>!</p>
+        
+        <h3>📝 Мои заметки</h3>
+        <div id="notes-list"></div>
+        
+        <input type="text" id="new-note" placeholder="Новая заметка...">
+        <button onclick="addNote()">Добавить заметку</button>
+        <button onclick="logout()" style="background: #6c757d; margin-top: 20px;">Выйти</button>
+    </div>
+</div>
+
+<script>
+    let users = JSON.parse(localStorage.getItem('myAppUsers')) || {};
+    let currentUser = null;
+
+    function saveUsers() {
+        localStorage.setItem('myAppUsers', JSON.stringify(users));
+    }
+
+    function showScreen(screenId) {
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('dashboard-screen').classList.add('hidden');
+        document.getElementById(screenId).classList.remove('hidden');
+    }
+
+    function showError(msg) {
+        const err = document.getElementById('auth-error');
+        err.innerText = msg;
+        setTimeout(() => err.innerText = '', 3000);
+    }
+
+    function register() {
+        const u = document.getElementById('username').value.trim();
+        const p = document.getElementById('password').value;
+        if (!u || !p) return showError('Заполните все поля');
+        if (users[u]) return showError('Такой логин уже есть');
+        
+        users[u] = { password: p, notes: [] };
+        saveUsers();
+        alert('Регистрация успешна! Теперь войдите.');
+    }
+
+    function login() {
+        const u = document.getElementById('username').value.trim();
+        const p = document.getElementById('password').value;
+        if (users[u] && users[u].password === p) {
+            currentUser = u;
+            document.getElementById('user-display').innerText = u;
+            showScreen('dashboard-screen');
+            renderNotes();
+        } else {
+            showError('Неверный логин или пароль');
+        }
+    }
+
+    function logout() {
+        currentUser = null;
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        showScreen('auth-screen');
+    }
+
+    function renderNotes() {
+        const list = document.getElementById('notes-list');
+        list.innerHTML = '';
+        const notes = users[currentUser].notes;
+        
+        if (notes.length === 0) {
+            list.innerHTML = '<p style="color: #888; font-size: 14px;">Пока нет заметок</p>';
+        } else {
+            notes.forEach((note, index) => {
+                const div = document.createElement('div');
+                div.className = 'note';
+                div.innerHTML = `<span>${note}</span> <button onclick="deleteNote(${index})">Удалить</button>`;
+                list.appendChild(div);
+            });
+        }
+    }
+
+    function addNote() {
+        const noteInput = document.getElementById('new-note');
+        const text = noteInput.value.trim();
+        if (text) {
+            users[currentUser].notes.push(text);
+            saveUsers();
+            noteInput.value = '';
+            renderNotes();
+        }
+    }
+
+    function deleteNote(index) {
+        users[currentUser].notes.splice(index, 1);
+        saveUsers();
+        renderNotes();
+    }
+</script>
+
+</body>
+</html>
