@@ -5,30 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мой Личный Кабинет</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; margin: 0; }
+        body { font-family: -apple-system, sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; margin: 0; }
         .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
         h1, h2 { text-align: center; color: #333; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
         button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px; }
         button:hover { background: #0056b3; }
+        .btn-green { background: #28a745; }
+        .btn-green:hover { background: #218838; }
         .note { background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #007bff; }
         .note button { width: auto; background: #dc3545; padding: 6px 12px; font-size: 14px; margin: 0; }
         .hidden { display: none; }
-        .error { color: red; text-align: center; margin-bottom: 10px; }
+        .error { color: red; text-align: center; margin-bottom: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- ЭКРАН 1: Вход и Регистрация -->
     <div id="auth-screen">
         <h1>👋 Добро пожаловать!</h1>
         <div id="auth-error" class="error"></div>
         <input type="text" id="username" placeholder="Логин">
         <input type="password" id="password" placeholder="Пароль">
         <button onclick="login()">Войти</button>
-        <button onclick="register()" style="background: #28a745; margin-top: 5px;">Зарегистрироваться</button>
+        <button class="btn-green" onclick="register()">Зарегистрироваться</button>
     </div>
 
+    <!-- ЭКРАН 2: Личный кабинет (скрыт по умолчанию) -->
     <div id="dashboard-screen" class="hidden">
         <h2>Личный кабинет</h2>
         <p style="text-align: center;">Привет, <strong id="user-display"></strong>!</p>
@@ -43,6 +47,7 @@
 </div>
 
 <script>
+    // Загружаем пользователей из памяти браузера
     let users = JSON.parse(localStorage.getItem('myAppUsers')) || {};
     let currentUser = null;
 
@@ -50,6 +55,7 @@
         localStorage.setItem('myAppUsers', JSON.stringify(users));
     }
 
+    // Переключение экранов
     function showScreen(screenId) {
         document.getElementById('auth-screen').classList.add('hidden');
         document.getElementById('dashboard-screen').classList.add('hidden');
@@ -62,37 +68,44 @@
         setTimeout(() => err.innerText = '', 3000);
     }
 
+    // ФУНКЦИЯ РЕГИСТРАЦИИ
     function register() {
         const u = document.getElementById('username').value.trim();
         const p = document.getElementById('password').value;
+        
         if (!u || !p) return showError('Заполните все поля');
         if (users[u]) return showError('Такой логин уже есть');
         
         users[u] = { password: p, notes: [] };
         saveUsers();
-        alert('Регистрация успешна! Теперь войдите.');
+        alert('✅ Регистрация успешна! Теперь войдите.');
     }
 
+    // ФУНКЦИЯ ВХОДА
     function login() {
         const u = document.getElementById('username').value.trim();
         const p = document.getElementById('password').value;
+        
         if (users[u] && users[u].password === p) {
+            // Если пароль верный — заходим в кабинет!
             currentUser = u;
             document.getElementById('user-display').innerText = u;
-            showScreen('dashboard-screen');
-            renderNotes();
+            showScreen('dashboard-screen'); // Показываем кабинет
+            renderNotes(); // Показываем заметки
         } else {
             showError('Неверный логин или пароль');
         }
     }
 
+    // ВЫХОД
     function logout() {
         currentUser = null;
         document.getElementById('username').value = '';
         document.getElementById('password').value = '';
-        showScreen('auth-screen');
+        showScreen('auth-screen'); // Возвращаем на экран входа
     }
 
+    // ОТРИСОВКА ЗАМЕТОК
     function renderNotes() {
         const list = document.getElementById('notes-list');
         list.innerHTML = '';
@@ -110,6 +123,7 @@
         }
     }
 
+    // ДОБАВЛЕНИЕ ЗАМЕТКИ
     function addNote() {
         const noteInput = document.getElementById('new-note');
         const text = noteInput.value.trim();
@@ -121,6 +135,7 @@
         }
     }
 
+    // УДАЛЕНИЕ ЗАМЕТКИ
     function deleteNote(index) {
         users[currentUser].notes.splice(index, 1);
         saveUsers();
