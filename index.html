@@ -3,20 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой Личный Кабинет</title>
+    <title>Мото Личный Кабинет</title>
     <style>
-        body { font-family: -apple-system, sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h1, h2 { text-align: center; color: #333; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        button:hover { background: #0056b3; }
-        .btn-green { background: #28a745; }
-        .btn-green:hover { background: #218838; }
-        .note { background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #007bff; }
-        .note button { width: auto; background: #dc3545; padding: 6px 12px; font-size: 14px; margin: 0; }
+        /* --- МОТО-ФОН --- */
+        body { 
+            font-family: 'Segoe UI', -apple-system, sans-serif; 
+            /* Темный градиент с имитацией неона */
+            background: radial-gradient(circle at 50% 0%, #2a2a35 0%, #111115 80%);
+            background-attachment: fixed;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px; 
+            margin: 0; 
+            color: #fff;
+        }
+
+        /* --- СТИЛЬНАЯ КАРТОЧКА --- */
+        .container { 
+            background: rgba(30, 30, 35, 0.85); /* Полупрозрачный темный фон */
+            backdrop-filter: blur(10px); /* Размытие заднего фона */
+            padding: 30px; 
+            border-radius: 16px; 
+            border: 1px solid #ff4500; /* Оранжевая рамка (мото-цвет) */
+            box-shadow: 0 0 20px rgba(255, 69, 0, 0.3); /* Неоновое свечение */
+            width: 100%; 
+            max-width: 400px; 
+        }
+
+        h1, h2 { 
+            text-align: center; 
+            color: #ff4500; /* Оранжевый заголовок */
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+            margin-bottom: 20px;
+        }
+
+        /* --- ПОЛЯ ВВОДА --- */
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            margin: 10px 0; 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid #444; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+            color: #fff;
+            transition: 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #ff4500;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.3);
+        }
+        input::placeholder {
+            color: #888;
+        }
+
+        /* --- КНОПКИ --- */
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background: #ff4500; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: bold;
+            cursor: pointer; 
+            margin-top: 15px; 
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        button:hover { 
+            background: #ff5722; 
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.6);
+        }
+
+        .btn-green { 
+            background: #333; 
+            border: 1px solid #555;
+        }
+        .btn-green:hover { 
+            background: #444; 
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- ЗАМЕТКИ --- */
+        .note { 
+            background: rgba(255, 255, 255, 0.05); 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin-top: 10px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-left: 4px solid #ff4500; 
+        }
+        .note button { 
+            width: auto; 
+            background: #d32f2f; 
+            padding: 6px 12px; 
+            font-size: 12px; 
+            margin: 0; 
+        }
+        .note button:hover { 
+            background: #f44336; 
+        }
+
         .hidden { display: none; }
-        .error { color: red; text-align: center; margin-bottom: 10px; font-weight: bold; }
+        .error { 
+            color: #ff5252; 
+            text-align: center; 
+            margin-bottom: 10px; 
+            font-weight: bold; 
+            text-shadow: 0 0 5px rgba(255, 82, 82, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -24,25 +128,25 @@
 <div class="container">
     <!-- ЭКРАН 1: Вход и Регистрация -->
     <div id="auth-screen">
-        <h1>👋 Добро пожаловать!</h1>
+        <h1>🏍️ Добро пожаловать!</h1>
         <div id="auth-error" class="error"></div>
         <input type="text" id="username" placeholder="Логин">
         <input type="password" id="password" placeholder="Пароль">
-        <button onclick="login()">Войти</button>
+        <button onclick="login()">Въехать на сайт (Войти)</button>
         <button class="btn-green" onclick="register()">Зарегистрироваться</button>
     </div>
 
-    <!-- ЭКРАН 2: Личный кабинет (скрыт по умолчанию) -->
+    <!-- ЭКРАН 2: Личный кабинет -->
     <div id="dashboard-screen" class="hidden">
         <h2>Личный кабинет</h2>
-        <p style="text-align: center;">Привет, <strong id="user-display"></strong>!</p>
+        <p style="text-align: center;">Привет, <strong style="color: #ff4500;" id="user-display"></strong>!</p>
         
-        <h3>📝 Мои заметки</h3>
+        <h3 style="margin-top: 30px;">📝 Мои заметки</h3>
         <div id="notes-list"></div>
         
-        <input type="text" id="new-note" placeholder="Новая заметка...">
-        <button onclick="addNote()">Добавить заметку</button>
-        <button onclick="logout()" style="background: #6c757d; margin-top: 20px;">Выйти</button>
+        <input type="text" id="new-note" placeholder="Новая запись...">
+        <button onclick="addNote()">Добавить запись</button>
+        <button onclick="logout()" class="btn-green" style="margin-top: 20px;">Выйти</button>
     </div>
 </div>
 
@@ -87,11 +191,10 @@
         const p = document.getElementById('password').value;
         
         if (users[u] && users[u].password === p) {
-            // Если пароль верный — заходим в кабинет!
             currentUser = u;
             document.getElementById('user-display').innerText = u;
-            showScreen('dashboard-screen'); // Показываем кабинет
-            renderNotes(); // Показываем заметки
+            showScreen('dashboard-screen');
+            renderNotes();
         } else {
             showError('Неверный логин или пароль');
         }
@@ -102,7 +205,7 @@
         currentUser = null;
         document.getElementById('username').value = '';
         document.getElementById('password').value = '';
-        showScreen('auth-screen'); // Возвращаем на экран входа
+        showScreen('auth-screen');
     }
 
     // ОТРИСОВКА ЗАМЕТОК
@@ -112,7 +215,7 @@
         const notes = users[currentUser].notes;
         
         if (notes.length === 0) {
-            list.innerHTML = '<p style="color: #888; font-size: 14px;">Пока нет заметок</p>';
+            list.innerHTML = '<p style="color: #888; font-size: 14px;">Пока нет записей</p>';
         } else {
             notes.forEach((note, index) => {
                 const div = document.createElement('div');
