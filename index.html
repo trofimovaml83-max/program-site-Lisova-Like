@@ -7,7 +7,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏍️</text></svg>">
     
     <style>
-        /* --- ПЕРЕМЕННЫЕ ДЛЯ ТЕМ (по умолчанию "Мото-неон") --- */
+        /* --- ПЕРЕМЕННЫЕ ДЛЯ ТЕМ --- */
         :root {
             --bg-gradient: radial-gradient(circle at 50% 0%, #2a2a35 0%, #111115 80%);
             --text-color: #ffffff;
@@ -19,8 +19,6 @@
             --btn-hover: #ff5722;
             --shadow-color: rgba(255, 69, 0, 0.3);
         }
-
-        /* --- СВЕТЛАЯ ТЕМА --- */
         body.theme-light {
             --bg-gradient: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
             --text-color: #333333;
@@ -32,8 +30,6 @@
             --btn-hover: #0056b3;
             --shadow-color: rgba(0, 123, 255, 0.3);
         }
-
-        /* --- ТЕМНАЯ ТЕМА (Классическая) --- */
         body.theme-dark {
             --bg-gradient: linear-gradient(135deg, #1e1e24 0%, #000000 100%);
             --text-color: #eeeeee;
@@ -46,113 +42,71 @@
             --shadow-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* --- ОБЩИЕ СТИЛИ --- */
         body { 
             font-family: 'Segoe UI', -apple-system, sans-serif; 
             background: var(--bg-gradient);
             background-attachment: fixed;
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            padding: 20px; 
-            box-sizing: border-box;
-            color: var(--text-color);
-            transition: background 0.5s, color 0.5s;
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box;
+            color: var(--text-color); transition: background 0.5s, color 0.5s;
         }
 
         .container { 
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 30px; 
-            border-radius: 16px; 
-            border: 1px solid var(--border-color); 
-            box-shadow: 0 0 20px var(--shadow-color); 
-            width: 100%; 
-            max-width: 400px; 
+            background: var(--card-bg); backdrop-filter: blur(10px);
+            padding: 30px; border-radius: 16px; border: 1px solid var(--border-color); 
+            box-shadow: 0 0 20px var(--shadow-color); width: 100%; max-width: 420px; 
             transition: background 0.5s, border 0.5s, box-shadow 0.5s;
+            max-height: 90vh; overflow-y: auto;
         }
 
-        h1, h2 { 
-            text-align: center; 
-            color: var(--accent-color); 
-            text-shadow: 0 0 10px var(--shadow-color);
-            margin-bottom: 20px;
-            transition: color 0.5s;
-        }
+        h1, h2 { text-align: center; color: var(--accent-color); text-shadow: 0 0 10px var(--shadow-color); margin-bottom: 20px; }
 
         input { 
-            width: 100%; 
-            padding: 14px; 
-            margin: 8px 0; 
-            background: var(--input-bg); 
-            border: 1px solid var(--input-border); 
-            border-radius: 8px; 
-            box-sizing: border-box; 
-            font-size: 16px; 
-            color: var(--text-color);
-            transition: 0.3s;
+            width: 100%; padding: 14px; margin: 8px 0; 
+            background: var(--input-bg); border: 1px solid var(--input-border); 
+            border-radius: 8px; box-sizing: border-box; font-size: 16px; 
+            color: var(--text-color); transition: 0.3s;
         }
-        input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 10px var(--shadow-color);
-        }
-        input::placeholder { color: #888; }
+        input:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 10px var(--shadow-color); }
 
         button { 
-            width: 100%; 
-            padding: 14px; 
-            background: var(--accent-color); 
-            color: #fff; 
-            border: none; 
-            border-radius: 8px; 
-            font-size: 16px; 
-            font-weight: bold;
-            cursor: pointer; 
-            margin-top: 10px; 
-            transition: 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            width: 100%; padding: 12px; background: var(--accent-color); color: #fff; 
+            border: none; border-radius: 8px; font-size: 16px; font-weight: bold;
+            cursor: pointer; margin-top: 10px; transition: 0.3s;
+            text-transform: uppercase; letter-spacing: 1px;
         }
-        button:hover { 
-            background: var(--btn-hover); 
-            box-shadow: 0 0 15px var(--shadow-color);
-        }
-
+        button:hover { background: var(--btn-hover); box-shadow: 0 0 15px var(--shadow-color); }
         .btn-green { background: #333; border: 1px solid #555; }
-        .btn-green:hover { background: #444; box-shadow: none; }
-        
+        .btn-green:hover { background: #444; }
         .btn-link { background: none; color: #888; box-shadow: none; text-transform: none; font-size: 14px; font-weight: normal; margin-top: 15px; text-decoration: underline; }
-        .btn-link:hover { color: var(--accent-color); box-shadow: none; background: none; }
+        .btn-link:hover { color: var(--accent-color); background: none; }
 
-        .note { 
-            background: var(--input-bg); 
-            padding: 12px; 
-            border-radius: 8px; 
-            margin-top: 10px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
+        /* Стили для плеера и треков */
+        .track { 
+            background: var(--input-bg); padding: 12px; border-radius: 8px; 
+            margin-top: 10px; display: flex; flex-direction: column; gap: 8px;
             border-left: 4px solid var(--accent-color); 
         }
-        .note button { 
-            width: auto; 
-            background: #d32f2f; 
-            padding: 6px 12px; 
-            font-size: 12px; 
-            margin: 0; 
-        }
-        .note button:hover { background: #f44336; }
+        .track-title { font-weight: bold; font-size: 15px; }
+        .track-actions { display: flex; gap: 8px; justify-content: space-between; }
+        .track-actions button { margin: 0; padding: 6px; font-size: 12px; width: auto; flex: 1; }
+        
+        .btn-play { background: #28a745; }
+        .btn-play:hover { background: #218838; }
+        .btn-fav { background: #444; border: 1px solid #666; }
+        .btn-fav:hover { background: #555; }
+        .btn-fav.active { background: #ff4500; border-color: #ff4500; color: white; }
+        .btn-download { background: #007bff; }
+        .btn-download:hover { background: #0056b3; }
 
         .hidden { display: none; }
         .error { color: #ff5252; text-align: center; margin-bottom: 10px; font-weight: bold; }
         .success { color: #4caf50; text-align: center; margin-bottom: 10px; font-weight: bold; }
-        
-        /* Стили для кнопок настроек */
+
         .theme-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
         .theme-buttons button { margin-top: 0; padding: 10px; font-size: 14px; }
+
+        audio { width: 100%; margin-top: 10px; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -187,25 +141,31 @@
         <h1>🔑 Восстановление</h1>
         <div id="recover-error" class="error"></div>
         <div id="recover-success" class="success"></div>
-        <p style="text-align: center; font-size: 14px; color: #888;">Введите вашу почту, и мы покажем ваш пароль.</p>
+        <p style="text-align: center; font-size: 14px; color: #888;">Введите вашу почту, и мы покажем пароль.</p>
         <input type="email" id="recover-email" placeholder="Ваш Email">
         <button onclick="recoverPassword()">Восстановить</button>
         <button class="btn-link" onclick="showScreen('auth-screen')">Назад ко входу</button>
     </div>
 
-    <!-- ЭКРАН 4: Личный кабинет -->
+    <!-- ЭКРАН 4: Личный кабинет (МУЗЫКА) -->
     <div id="dashboard-screen" class="hidden">
-        <h2>Личный кабинет</h2>
-        <p style="text-align: center;">Привет, <strong style="color: var(--accent-color);" id="user-display"></strong>!</p>
-        <p style="text-align: center; font-size: 12px; color: #888;" id="user-info"></p>
+        <h2>🎵 Мото-Радио</h2>
+        <p style="text-align: center; margin-bottom: 20px;">Привет, <strong style="color: var(--accent-color);" id="user-display"></strong>!</p>
         
-        <h3 style="margin-top: 20px;">📝 Мои заметки</h3>
-        <div id="notes-list"></div>
+        <!-- Форма добавления трека -->
+        <input type="text" id="track-name" placeholder="Название трека (например, Bass Boosted)">
+        <input type="url" id="track-url" placeholder="Ссылка на MP3 (прямая ссылка)">
+        <button onclick="addTrack()">➕ Добавить трек</button>
         
-        <input type="text" id="new-note" placeholder="Новая запись...">
-        <button onclick="addNote()">Добавить запись</button>
+        <hr style="border-color: var(--input-border); margin: 20px 0;">
+
+        <!-- Списки треков -->
+        <h3 style="margin-bottom: 10px;">Все треки</h3>
+        <div id="tracks-list"></div>
         
-        <!-- Кнопки в кабинете -->
+        <h3 style="margin-top: 20px; margin-bottom: 10px;">⭐ Избранное</h3>
+        <div id="fav-list"></div>
+
         <button onclick="showScreen('settings-screen')" class="btn-green" style="margin-top: 20px;">⚙️ Настройки</button>
         <button onclick="logout()" class="btn-green" style="margin-top: 10px;">Выйти</button>
     </div>
@@ -213,22 +173,16 @@
     <!-- ЭКРАН 5: НАСТРОЙКИ -->
     <div id="settings-screen" class="hidden">
         <h2>⚙️ Настройки</h2>
-        
         <p style="font-size: 14px; margin-bottom: 10px;">Выберите тему оформления:</p>
         <div class="theme-buttons">
             <button onclick="setTheme('neon')" style="background: #ff4500;">Неон</button>
             <button onclick="setTheme('light')" style="background: #007bff;">Светлая</button>
             <button onclick="setTheme('dark')" style="background: #444;">Темная</button>
         </div>
-
         <hr style="border-color: var(--input-border); margin: 20px 0;">
-
         <p style="font-size: 14px; margin-bottom: 10px;">Служба поддержки:</p>
-        <p style="font-size: 12px; color: #888; margin-bottom: 15px;">Нажмите кнопку ниже, чтобы написать нам. Откроется ваш почтовый клиент.</p>
-        
         <button onclick="contactSupport()">✉️ Написать в поддержку</button>
-
-        <button class="btn-link" onclick="showScreen('dashboard-screen')" style="margin-top: 20px;">Назад в кабинет</button>
+        <button class="btn-link" onclick="showScreen('dashboard-screen')" style="margin-top: 20px;">Назад</button>
     </div>
 </div>
 
@@ -236,32 +190,23 @@
     let users = JSON.parse(localStorage.getItem('myAppUsers')) || {};
     let currentUser = null;
 
-    // При загрузке страницы проверяем сохраненную тему
     window.onload = function() {
         const savedTheme = localStorage.getItem('siteTheme') || 'neon';
         setTheme(savedTheme);
     };
 
-    function saveUsers() {
-        localStorage.setItem('myAppUsers', JSON.stringify(users));
-    }
-
-    // Управление темами
+    function saveUsers() { localStorage.setItem('myAppUsers', JSON.stringify(users)); }
+    
     function setTheme(themeName) {
-        document.body.className = ''; // Сбрасываем классы
+        document.body.className = '';
         if (themeName === 'light') document.body.classList.add('theme-light');
         else if (themeName === 'dark') document.body.classList.add('theme-dark');
-        // Для неона класс не нужен, это дефолтные стили в :root
-        
-        localStorage.setItem('siteTheme', themeName); // Запоминаем выбор
+        localStorage.setItem('siteTheme', themeName);
     }
 
-    // Поддержка (открывает почтовый клиент)
     function contactSupport() {
-        const email = "trofimovaml83@gmail.com"; // Замените на свой email!
-        const subject = "Вопрос в поддержку";
-        const body = "Здравствуйте! У меня возник вопрос...";
-        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const email = "support@moto-site.ru"; // Ваша почта
+        window.location.href = `mailto:${email}?subject=Вопрос в поддержку`;
     }
 
     function showScreen(screenId) {
@@ -269,7 +214,6 @@
         screens.forEach(id => document.getElementById(id).classList.add('hidden'));
         document.getElementById(screenId).classList.remove('hidden');
         
-        // Очищаем ошибки
         document.getElementById('auth-error').innerText = '';
         document.getElementById('reg-error').innerText = '';
         document.getElementById('reg-success').innerText = '';
@@ -290,7 +234,8 @@
         if (!u || !p || !phone || !email) return err.innerText = 'Заполните все поля!';
         if (users[u]) return err.innerText = 'Такой логин уже есть';
         
-        users[u] = { password: p, phone: phone, email: email, notes: [] };
+        // Создаем пустые массивы для треков и избранного
+        users[u] = { password: p, phone: phone, email: email, tracks: [], favorites: [] };
         saveUsers();
         
         succ.innerText = '✅ Успешно! Теперь можете войти.';
@@ -307,9 +252,8 @@
         if (users[u] && users[u].password === p) {
             currentUser = u;
             document.getElementById('user-display').innerText = u;
-            document.getElementById('user-info').innerText = `📞 ${users[u].phone} | ✉️ ${users[u].email}`;
             showScreen('dashboard-screen');
-            renderNotes();
+            renderTracks();
         } else {
             document.getElementById('auth-error').innerText = 'Неверный логин или пароль';
             setTimeout(() => document.getElementById('auth-error').innerText = '', 3000);
@@ -343,38 +287,125 @@
         showScreen('auth-screen');
     }
 
-    function renderNotes() {
-        const list = document.getElementById('notes-list');
-        list.innerHTML = '';
-        const notes = users[currentUser].notes;
+    // --- ДОБАВЛЕНИЕ ТРЕКА ---
+    function addTrack() {
+        const name = document.getElementById('track-name').value.trim();
+        const url = document.getElementById('track-url').value.trim();
+
+        if (!name || !url) {
+            alert("Заполните название и ссылку!");
+            return;
+        }
+
+        // Добавляем трек в массив пользователя
+        users[currentUser].tracks.push({ name: name, url: url });
+        saveUsers();
         
-        if (notes.length === 0) {
-            list.innerHTML = '<p style="color: #888; font-size: 14px;">Пока нет записей</p>';
+        // Очищаем поля
+        document.getElementById('track-name').value = '';
+        document.getElementById('track-url').value = '';
+        
+        renderTracks();
+    }
+
+    // --- ОТРИСОВКА ТРЕКОВ ---
+    function renderTracks() {
+        const list = document.getElementById('tracks-list');
+        const favList = document.getElementById('fav-list');
+        list.innerHTML = '';
+        favList.innerHTML = '';
+
+        const tracks = users[currentUser].tracks || [];
+        const favorites = users[currentUser].favorites || [];
+
+        // 1. Отрисовка всех треков
+        if (tracks.length === 0) {
+            list.innerHTML = '<p style="color: #888; font-size: 14px;">Список пуст. Добавьте первый трек!</p>';
         } else {
-            notes.forEach((note, index) => {
+            tracks.forEach((track, index) => {
+                const isFav = favorites.some(f => f.url === track.url);
                 const div = document.createElement('div');
-                div.className = 'note';
-                div.innerHTML = `<span>${note}</span> <button onclick="deleteNote(${index})">Удалить</button>`;
+                div.className = 'track';
+                div.innerHTML = `
+                    <div class="track-title">🎵 ${track.name}</div>
+                    <audio controls src="${track.url}"></audio>
+                    <div class="track-actions">
+                        <button class="btn-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite(${index})">
+                            ${isFav ? '❤️ В избранном' : '🤍 В избранное'}
+                        </button>
+                        <button class="btn-download" onclick="downloadTrack('${track.url}', '${track.name}')">📥 Скачать</button>
+                        <button style="background:#d32f2f;" onclick="deleteTrack(${index})">🗑️</button>
+                    </div>
+                `;
                 list.appendChild(div);
+            });
+        }
+
+        // 2. Отрисовка избранного
+        if (favorites.length === 0) {
+            favList.innerHTML = '<p style="color: #888; font-size: 14px;">Нет избранных треков.</p>';
+        } else {
+            favorites.forEach((track, index) => {
+                const div = document.createElement('div');
+                div.className = 'track';
+                div.innerHTML = `
+                    <div class="track-title">⭐ ${track.name}</div>
+                    <audio controls src="${track.url}"></audio>
+                    <div class="track-actions">
+                        <button class="btn-fav active" onclick="removeFavorite(${index})">❌ Убрать</button>
+                        <button class="btn-download" onclick="downloadTrack('${track.url}', '${track.name}')">📥 Скачать</button>
+                    </div>
+                `;
+                favList.appendChild(div);
             });
         }
     }
 
-    function addNote() {
-        const noteInput = document.getElementById('new-note');
-        const text = noteInput.value.trim();
-        if (text) {
-            users[currentUser].notes.push(text);
+    // --- ДОБАВИТЬ/УБРАТЬ ИЗ ИЗБРАННОГО ---
+    function toggleFavorite(index) {
+        const track = users[currentUser].tracks[index];
+        const favorites = users[currentUser].favorites;
+        
+        // Проверяем, есть ли уже в избранном
+        const favIndex = favorites.findIndex(f => f.url === track.url);
+        
+        if (favIndex === -1) {
+            // Добавляем
+            favorites.push(track);
+        } else {
+            // Удаляем
+            favorites.splice(favIndex, 1);
+        }
+        
+        saveUsers();
+        renderTracks();
+    }
+
+    function removeFavorite(index) {
+        users[currentUser].favorites.splice(index, 1);
+        saveUsers();
+        renderTracks();
+    }
+
+    // --- УДАЛИТЬ ТРЕК ---
+    function deleteTrack(index) {
+        if(confirm("Удалить этот трек?")) {
+            users[currentUser].tracks.splice(index, 1);
             saveUsers();
-            noteInput.value = '';
-            renderNotes();
+            renderTracks();
         }
     }
 
-    function deleteNote(index) {
-        users[currentUser].notes.splice(index, 1);
-        saveUsers();
-        renderNotes();
+    // --- СКАЧИВАНИЕ ---
+    function downloadTrack(url, name) {
+        // Создаем временную ссылку для скачивания
+        const a = document.createElement('a');
+        a.href = url;
+        // Пытаемся дать файлу красивое имя
+        a.download = name + ".mp3"; 
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     }
 </script>
 
