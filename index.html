@@ -5,11 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мото Личный Кабинет</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏍️</text></svg>">
+    
     <style>
-        /* --- МОТО-ФОН --- */
+        /* --- ПЕРЕМЕННЫЕ ДЛЯ ТЕМ (по умолчанию "Мото-неон") --- */
+        :root {
+            --bg-gradient: radial-gradient(circle at 50% 0%, #2a2a35 0%, #111115 80%);
+            --text-color: #ffffff;
+            --card-bg: rgba(30, 30, 35, 0.85);
+            --border-color: #ff4500;
+            --accent-color: #ff4500;
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --input-border: #444;
+            --btn-hover: #ff5722;
+            --shadow-color: rgba(255, 69, 0, 0.3);
+        }
+
+        /* --- СВЕТЛАЯ ТЕМА --- */
+        body.theme-light {
+            --bg-gradient: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            --text-color: #333333;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border-color: #007bff;
+            --accent-color: #007bff;
+            --input-bg: #f8f9fa;
+            --input-border: #ccc;
+            --btn-hover: #0056b3;
+            --shadow-color: rgba(0, 123, 255, 0.3);
+        }
+
+        /* --- ТЕМНАЯ ТЕМА (Классическая) --- */
+        body.theme-dark {
+            --bg-gradient: linear-gradient(135deg, #1e1e24 0%, #000000 100%);
+            --text-color: #eeeeee;
+            --card-bg: rgba(40, 40, 45, 0.9);
+            --border-color: #555555;
+            --accent-color: #888888;
+            --input-bg: rgba(255, 255, 255, 0.1);
+            --input-border: #666;
+            --btn-hover: #666666;
+            --shadow-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- ОБЩИЕ СТИЛИ --- */
         body { 
             font-family: 'Segoe UI', -apple-system, sans-serif; 
-            background: radial-gradient(circle at 50% 0%, #2a2a35 0%, #111115 80%);
+            background: var(--bg-gradient);
             background-attachment: fixed;
             display: flex; 
             justify-content: center; 
@@ -18,56 +58,54 @@
             margin: 0; 
             padding: 20px; 
             box-sizing: border-box;
-            color: #fff;
+            color: var(--text-color);
+            transition: background 0.5s, color 0.5s;
         }
 
-        /* --- СТИЛЬНАЯ КАРТОЧКА --- */
         .container { 
-            background: rgba(30, 30, 35, 0.85);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             padding: 30px; 
             border-radius: 16px; 
-            border: 1px solid #ff4500; 
-            box-shadow: 0 0 20px rgba(255, 69, 0, 0.3); 
+            border: 1px solid var(--border-color); 
+            box-shadow: 0 0 20px var(--shadow-color); 
             width: 100%; 
             max-width: 400px; 
+            transition: background 0.5s, border 0.5s, box-shadow 0.5s;
         }
 
         h1, h2 { 
             text-align: center; 
-            color: #ff4500; 
-            text-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+            color: var(--accent-color); 
+            text-shadow: 0 0 10px var(--shadow-color);
             margin-bottom: 20px;
+            transition: color 0.5s;
         }
 
-        /* --- ПОЛЯ ВВОДА --- */
         input { 
             width: 100%; 
             padding: 14px; 
             margin: 8px 0; 
-            background: rgba(255, 255, 255, 0.05); 
-            border: 1px solid #444; 
+            background: var(--input-bg); 
+            border: 1px solid var(--input-border); 
             border-radius: 8px; 
             box-sizing: border-box; 
             font-size: 16px; 
-            color: #fff;
+            color: var(--text-color);
             transition: 0.3s;
         }
         input:focus {
             outline: none;
-            border-color: #ff4500;
-            box-shadow: 0 0 10px rgba(255, 69, 0, 0.3);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px var(--shadow-color);
         }
-        input::placeholder {
-            color: #888;
-        }
+        input::placeholder { color: #888; }
 
-        /* --- КНОПКИ --- */
         button { 
             width: 100%; 
             padding: 14px; 
-            background: #ff4500; 
-            color: white; 
+            background: var(--accent-color); 
+            color: #fff; 
             border: none; 
             border-radius: 8px; 
             font-size: 16px; 
@@ -79,26 +117,25 @@
             letter-spacing: 1px;
         }
         button:hover { 
-            background: #ff5722; 
-            box-shadow: 0 0 15px rgba(255, 69, 0, 0.6);
+            background: var(--btn-hover); 
+            box-shadow: 0 0 15px var(--shadow-color);
         }
 
         .btn-green { background: #333; border: 1px solid #555; }
-        .btn-green:hover { background: #444; box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
+        .btn-green:hover { background: #444; box-shadow: none; }
         
-        .btn-link { background: none; color: #aaa; box-shadow: none; text-transform: none; font-size: 14px; font-weight: normal; margin-top: 15px; text-decoration: underline; }
-        .btn-link:hover { color: #fff; box-shadow: none; background: none; }
+        .btn-link { background: none; color: #888; box-shadow: none; text-transform: none; font-size: 14px; font-weight: normal; margin-top: 15px; text-decoration: underline; }
+        .btn-link:hover { color: var(--accent-color); box-shadow: none; background: none; }
 
-        /* --- ЗАМЕТКИ --- */
         .note { 
-            background: rgba(255, 255, 255, 0.05); 
+            background: var(--input-bg); 
             padding: 12px; 
             border-radius: 8px; 
             margin-top: 10px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            border-left: 4px solid #ff4500; 
+            border-left: 4px solid var(--accent-color); 
         }
         .note button { 
             width: auto; 
@@ -110,8 +147,12 @@
         .note button:hover { background: #f44336; }
 
         .hidden { display: none; }
-        .error { color: #ff5252; text-align: center; margin-bottom: 10px; font-weight: bold; text-shadow: 0 0 5px rgba(255, 82, 82, 0.5); }
+        .error { color: #ff5252; text-align: center; margin-bottom: 10px; font-weight: bold; }
         .success { color: #4caf50; text-align: center; margin-bottom: 10px; font-weight: bold; }
+        
+        /* Стили для кнопок настроек */
+        .theme-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+        .theme-buttons button { margin-top: 0; padding: 10px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -146,7 +187,7 @@
         <h1>🔑 Восстановление</h1>
         <div id="recover-error" class="error"></div>
         <div id="recover-success" class="success"></div>
-        <p style="text-align: center; font-size: 14px; color: #aaa;">Введите вашу почту, и мы покажем ваш пароль.</p>
+        <p style="text-align: center; font-size: 14px; color: #888;">Введите вашу почту, и мы покажем ваш пароль.</p>
         <input type="email" id="recover-email" placeholder="Ваш Email">
         <button onclick="recoverPassword()">Восстановить</button>
         <button class="btn-link" onclick="showScreen('auth-screen')">Назад ко входу</button>
@@ -155,7 +196,7 @@
     <!-- ЭКРАН 4: Личный кабинет -->
     <div id="dashboard-screen" class="hidden">
         <h2>Личный кабинет</h2>
-        <p style="text-align: center;">Привет, <strong style="color: #ff4500;" id="user-display"></strong>!</p>
+        <p style="text-align: center;">Привет, <strong style="color: var(--accent-color);" id="user-display"></strong>!</p>
         <p style="text-align: center; font-size: 12px; color: #888;" id="user-info"></p>
         
         <h3 style="margin-top: 20px;">📝 Мои заметки</h3>
@@ -163,29 +204,72 @@
         
         <input type="text" id="new-note" placeholder="Новая запись...">
         <button onclick="addNote()">Добавить запись</button>
-        <button onclick="logout()" class="btn-green" style="margin-top: 20px;">Выйти</button>
+        
+        <!-- Кнопки в кабинете -->
+        <button onclick="showScreen('settings-screen')" class="btn-green" style="margin-top: 20px;">⚙️ Настройки</button>
+        <button onclick="logout()" class="btn-green" style="margin-top: 10px;">Выйти</button>
+    </div>
+
+    <!-- ЭКРАН 5: НАСТРОЙКИ -->
+    <div id="settings-screen" class="hidden">
+        <h2>⚙️ Настройки</h2>
+        
+        <p style="font-size: 14px; margin-bottom: 10px;">Выберите тему оформления:</p>
+        <div class="theme-buttons">
+            <button onclick="setTheme('neon')" style="background: #ff4500;">Неон</button>
+            <button onclick="setTheme('light')" style="background: #007bff;">Светлая</button>
+            <button onclick="setTheme('dark')" style="background: #444;">Темная</button>
+        </div>
+
+        <hr style="border-color: var(--input-border); margin: 20px 0;">
+
+        <p style="font-size: 14px; margin-bottom: 10px;">Служба поддержки:</p>
+        <p style="font-size: 12px; color: #888; margin-bottom: 15px;">Нажмите кнопку ниже, чтобы написать нам. Откроется ваш почтовый клиент.</p>
+        
+        <button onclick="contactSupport()">✉️ Написать в поддержку</button>
+
+        <button class="btn-link" onclick="showScreen('dashboard-screen')" style="margin-top: 20px;">Назад в кабинет</button>
     </div>
 </div>
 
 <script>
-    // Загружаем пользователей из памяти браузера
     let users = JSON.parse(localStorage.getItem('myAppUsers')) || {};
     let currentUser = null;
+
+    // При загрузке страницы проверяем сохраненную тему
+    window.onload = function() {
+        const savedTheme = localStorage.getItem('siteTheme') || 'neon';
+        setTheme(savedTheme);
+    };
 
     function saveUsers() {
         localStorage.setItem('myAppUsers', JSON.stringify(users));
     }
 
-    // Переключение экранов
-    function showScreen(screenId) {
-        document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('register-screen').classList.add('hidden');
-        document.getElementById('recover-screen').classList.add('hidden');
-        document.getElementById('dashboard-screen').classList.add('hidden');
+    // Управление темами
+    function setTheme(themeName) {
+        document.body.className = ''; // Сбрасываем классы
+        if (themeName === 'light') document.body.classList.add('theme-light');
+        else if (themeName === 'dark') document.body.classList.add('theme-dark');
+        // Для неона класс не нужен, это дефолтные стили в :root
         
+        localStorage.setItem('siteTheme', themeName); // Запоминаем выбор
+    }
+
+    // Поддержка (открывает почтовый клиент)
+    function contactSupport() {
+        const email = "trofimovaml83@gmail.com"; // Замените на свой email!
+        const subject = "Вопрос в поддержку";
+        const body = "Здравствуйте! У меня возник вопрос...";
+        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+
+    function showScreen(screenId) {
+        const screens = ['auth-screen', 'register-screen', 'recover-screen', 'dashboard-screen', 'settings-screen'];
+        screens.forEach(id => document.getElementById(id).classList.add('hidden'));
         document.getElementById(screenId).classList.remove('hidden');
         
-        // Очищаем сообщения об ошибках при переходе
+        // Очищаем ошибки
         document.getElementById('auth-error').innerText = '';
         document.getElementById('reg-error').innerText = '';
         document.getElementById('reg-success').innerText = '';
@@ -193,7 +277,6 @@
         document.getElementById('recover-success').innerText = '';
     }
 
-    // --- РЕГИСТРАЦИЯ ---
     function register() {
         const u = document.getElementById('reg-username').value.trim();
         const p = document.getElementById('reg-password').value;
@@ -204,28 +287,19 @@
         
         err.innerText = ''; succ.innerText = '';
 
-        if (!u || !p || !phone || !email) {
-            err.innerText = 'Пожалуйста, заполните все поля!';
-            return;
-        }
-        if (users[u]) {
-            err.innerText = 'Такой логин уже есть';
-            return;
-        }
+        if (!u || !p || !phone || !email) return err.innerText = 'Заполните все поля!';
+        if (users[u]) return err.innerText = 'Такой логин уже есть';
         
-        // Сохраняем пользователя со всеми данными
         users[u] = { password: p, phone: phone, email: email, notes: [] };
         saveUsers();
         
         succ.innerText = '✅ Успешно! Теперь можете войти.';
         setTimeout(() => {
             showScreen('auth-screen');
-            // Автоматически подставляем логин для удобства
             document.getElementById('username').value = u; 
         }, 1500);
     }
 
-    // --- ВХОД ---
     function login() {
         const u = document.getElementById('username').value.trim();
         const p = document.getElementById('password').value;
@@ -242,26 +316,17 @@
         }
     }
 
-    // --- ВОССТАНОВЛЕНИЕ ПАРОЛЯ ---
     function recoverPassword() {
         const email = document.getElementById('recover-email').value.trim();
         const err = document.getElementById('recover-error');
         const succ = document.getElementById('recover-success');
-        
         err.innerText = ''; succ.innerText = '';
 
-        if (!email) {
-            err.innerText = 'Введите email';
-            return;
-        }
+        if (!email) return err.innerText = 'Введите email';
 
-        // Ищем пользователя с такой почтой
         let foundUser = null;
         for (let login in users) {
-            if (users[login].email === email) {
-                foundUser = login;
-                break;
-            }
+            if (users[login].email === email) { foundUser = login; break; }
         }
 
         if (foundUser) {
@@ -271,7 +336,6 @@
         }
     }
 
-    // --- ВЫХОД ---
     function logout() {
         currentUser = null;
         document.getElementById('username').value = '';
@@ -279,7 +343,6 @@
         showScreen('auth-screen');
     }
 
-    // --- ЗАМЕТКИ ---
     function renderNotes() {
         const list = document.getElementById('notes-list');
         list.innerHTML = '';
