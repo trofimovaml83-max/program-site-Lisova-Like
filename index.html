@@ -3,246 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мото Личный Кабинет</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏍️</text></svg>">
+    <title>Моя Музыка</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
     
     <style>
-        /* --- ПЕРЕМЕННЫЕ ДЛЯ ТЕМ --- */
-        :root {
-            --bg-gradient: radial-gradient(circle at 50% 0%, #2a2a35 0%, #111115 80%);
-            --text-color: #ffffff;
-            --card-bg: rgba(30, 30, 35, 0.85);
-            --border-color: #ff4500;
-            --accent-color: #ff4500;
-            --input-bg: rgba(255, 255, 255, 0.05);
-            --input-border: #444;
-            --btn-hover: #ff5722;
-            --shadow-color: rgba(255, 69, 0, 0.3);
-        }
-        body.theme-light {
-            --bg-gradient: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
-            --text-color: #333333;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --border-color: #007bff;
-            --accent-color: #007bff;
-            --input-bg: #f8f9fa;
-            --input-border: #ccc;
-            --btn-hover: #0056b3;
-            --shadow-color: rgba(0, 123, 255, 0.3);
-        }
-        body.theme-dark {
-            --bg-gradient: linear-gradient(135deg, #1e1e24 0%, #000000 100%);
-            --text-color: #eeeeee;
-            --card-bg: rgba(40, 40, 45, 0.9);
-            --border-color: #555555;
-            --accent-color: #888888;
-            --input-bg: rgba(255, 255, 255, 0.1);
-            --input-border: #666;
-            --btn-hover: #666666;
-            --shadow-color: rgba(255, 255, 255, 0.1);
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
             font-family: 'Segoe UI', -apple-system, sans-serif; 
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box;
-            color: var(--text-color); transition: background 0.5s, color 0.5s;
+            background: #000; color: #fff;
+            height: 100vh; display: flex; overflow: hidden;
         }
 
-        .container { 
-            background: var(--card-bg); backdrop-filter: blur(10px);
-            padding: 30px; border-radius: 16px; border: 1px solid var(--border-color); 
-            box-shadow: 0 0 20px var(--shadow-color); width: 100%; max-width: 420px; 
-            transition: background 0.5s, border 0.5s, box-shadow 0.5s;
-            max-height: 90vh; overflow-y: auto;
+        /* --- БОКОВОЕ МЕНЮ --- */
+        .sidebar {
+            width: 250px; background: #0a0a0a; padding: 20px;
+            display: flex; flex-direction: column; border-right: 1px solid #222;
+        }
+        .logo { font-size: 24px; font-weight: bold; color: #ffdb4d; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+        .menu-item { padding: 12px 10px; color: #aaa; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.2s; font-weight: 500; }
+        .menu-item:hover { background: #1a1a1a; color: #fff; }
+        .menu-item.active { color: #ffdb4d; background: #111; }
+        .auth-btn { background: #ffdb4d; color: #000; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: auto; }
+        .auth-btn:hover { background: #ffe680; }
+
+        /* --- ГЛАВНАЯ ОБЛАСТЬ --- */
+        .main-content {
+            flex: 1; background: linear-gradient(180deg, #111 0%, #000 100%);
+            padding: 40px; overflow-y: auto; position: relative; padding-bottom: 120px;
         }
 
-        h1, h2 { text-align: center; color: var(--accent-color); text-shadow: 0 0 10px var(--shadow-color); margin-bottom: 20px; }
+        /* Авторизация */
+        .auth-box { max-width: 400px; margin: 100px auto; background: #111; padding: 30px; border-radius: 16px; border: 1px solid #333; }
+        .auth-box h2 { margin-bottom: 20px; color: #ffdb4d; text-align: center; }
+        .auth-box input { width: 100%; padding: 12px; margin-bottom: 10px; background: #222; border: 1px solid #333; border-radius: 8px; color: #fff; }
+        .auth-box input:focus { outline: none; border-color: #ffdb4d; }
+        .auth-box button { width: 100%; padding: 12px; background: #ffdb4d; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .error { color: #ff5252; text-align: center; margin-bottom: 10px; font-size: 14px; }
+        .link-btn { background: none; border: none; color: #aaa; cursor: pointer; text-decoration: underline; margin-top: 15px; width: 100%; font-size: 14px; }
 
-        input { 
-            width: 100%; padding: 14px; margin: 8px 0; 
-            background: var(--input-bg); border: 1px solid var(--input-border); 
-            border-radius: 8px; box-sizing: border-box; font-size: 16px; 
-            color: var(--text-color); transition: 0.3s;
-        }
-        input:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 10px var(--shadow-color); }
+        .hidden { display: none !important; }
+        .header-title { font-size: 32px; font-weight: bold; margin-bottom: 30px; }
 
-        button { 
-            width: 100%; padding: 12px; background: var(--accent-color); color: #fff; 
-            border: none; border-radius: 8px; font-size: 16px; font-weight: bold;
-            cursor: pointer; margin-top: 10px; transition: 0.3s;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        button:hover { background: var(--btn-hover); box-shadow: 0 0 15px var(--shadow-color); }
-        .btn-green { background: #333; border: 1px solid #555; }
-        .btn-green:hover { background: #444; }
-        .btn-link { background: none; color: #888; box-shadow: none; text-transform: none; font-size: 14px; font-weight: normal; margin-top: 15px; text-decoration: underline; }
-        .btn-link:hover { color: var(--accent-color); background: none; }
+        /* Сетка треков */
+        .tracks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        .track-card { background: #111; padding: 15px; border-radius: 12px; transition: 0.2s; cursor: pointer; position: relative; }
+        .track-card:hover { background: #222; }
+        .track-cover { width: 100%; aspect-ratio: 1; background: linear-gradient(45deg, #ffdb4d, #ff4500); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; margin-bottom: 10px; overflow: hidden; }
+        .track-cover img { width: 100%; height: 100%; object-fit: cover; }
+        .track-name { font-weight: bold; font-size: 14px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .track-artist { font-size: 12px; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .track-actions { display: flex; justify-content: space-between; margin-top: 10px; }
+        .track-actions button { background: none; border: none; color: #aaa; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .track-actions button:hover { color: #ffdb4d; }
+        .fav-active { color: #ff4500 !important; }
 
-        /* Стили для плеера и треков */
-        .track { 
-            background: var(--input-bg); padding: 12px; border-radius: 8px; 
-            margin-top: 10px; display: flex; flex-direction: column; gap: 8px;
-            border-left: 4px solid var(--accent-color); 
+        /* ПЛЕЕР ВНИЗУ */
+        .player-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 80px;
+            background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px);
+            border-top: 1px solid #222; display: flex; align-items: center;
+            padding: 0 30px; gap: 20px; z-index: 100;
         }
-        .track-title { font-weight: bold; font-size: 15px; }
-        .track-actions { display: flex; gap: 8px; justify-content: space-between; }
-        .track-actions button { margin: 0; padding: 6px; font-size: 12px; width: auto; flex: 1; }
+        .player-cover { width: 50px; height: 50px; background: #ffdb4d; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .player-cover img { width: 100%; height: 100%; object-fit: cover; }
+        .player-info { width: 250px; }
+        .player-title { font-weight: bold; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .player-artist { font-size: 12px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .player-controls { flex: 1; display: flex; justify-content: center; align-items: center; gap: 20px; }
+        .play-btn { width: 40px; height: 40px; border-radius: 50%; background: #fff; color: #000; border: none; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .play-btn:hover { transform: scale(1.05); }
+        audio { display: none; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         
-        .btn-play { background: #28a745; }
-        .btn-play:hover { background: #218838; }
-        .btn-fav { background: #444; border: 1px solid #666; }
-        .btn-fav:hover { background: #555; }
-        .btn-fav.active { background: #ff4500; border-color: #ff4500; color: white; }
-        .btn-download { background: #007bff; }
-        .btn-download:hover { background: #0056b3; }
-
-        .hidden { display: none; }
-        .error { color: #ff5252; text-align: center; margin-bottom: 10px; font-weight: bold; }
-        .success { color: #4caf50; text-align: center; margin-bottom: 10px; font-weight: bold; }
-
-        .theme-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
-        .theme-buttons button { margin-top: 0; padding: 10px; font-size: 14px; }
-
-        audio { width: 100%; margin-top: 10px; border-radius: 8px; }
+        /* Анимация загрузки */
+        .loader { text-align: center; color: #ffdb4d; font-size: 18px; margin-top: 50px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- ЭКРАН 1: Вход -->
-    <div id="auth-screen">
-        <h1>🏍️ Вход</h1>
-        <div id="auth-error" class="error"></div>
-        <input type="text" id="username" placeholder="Логин">
-        <input type="password" id="password" placeholder="Пароль">
-        <button onclick="login()">Войти</button>
-        <button class="btn-green" onclick="showScreen('register-screen')">Зарегистрироваться</button>
-        <button class="btn-link" onclick="showScreen('recover-screen')">Забыли пароль?</button>
-    </div>
-
-    <!-- ЭКРАН 2: Регистрация -->
-    <div id="register-screen" class="hidden">
-        <h1>📝 Регистрация</h1>
-        <div id="reg-error" class="error"></div>
-        <div id="reg-success" class="success"></div>
-        <input type="text" id="reg-username" placeholder="Придумайте логин">
-        <input type="password" id="reg-password" placeholder="Придумайте пароль">
-        <input type="tel" id="reg-phone" placeholder="Номер телефона">
-        <input type="email" id="reg-email" placeholder="Электронная почта (Email)">
-        <button onclick="register()">Создать аккаунт</button>
-        <button class="btn-link" onclick="showScreen('auth-screen')">Назад ко входу</button>
-    </div>
-
-    <!-- ЭКРАН 3: Восстановление пароля -->
-    <div id="recover-screen" class="hidden">
-        <h1>🔑 Восстановление</h1>
-        <div id="recover-error" class="error"></div>
-        <div id="recover-success" class="success"></div>
-        <p style="text-align: center; font-size: 14px; color: #888;">Введите вашу почту, и мы покажем пароль.</p>
-        <input type="email" id="recover-email" placeholder="Ваш Email">
-        <button onclick="recoverPassword()">Восстановить</button>
-        <button class="btn-link" onclick="showScreen('auth-screen')">Назад ко входу</button>
-    </div>
-
-    <!-- ЭКРАН 4: Личный кабинет (МУЗЫКА) -->
-    <div id="dashboard-screen" class="hidden">
-        <h2>🎵 Мото-Радио</h2>
-        <p style="text-align: center; margin-bottom: 20px;">Привет, <strong style="color: var(--accent-color);" id="user-display"></strong>!</p>
+    <!-- ЛЕВОЕ МЕНЮ -->
+    <div class="sidebar">
+        <div class="logo">🎵 Моя Музыка</div>
+        <div class="menu-item active" id="menu-wave" onclick="showScreen('wave-screen'); loadWave()">🌊 Моя волна</div>
+        <div class="menu-item" id="menu-fav" onclick="showScreen('fav-screen')">❤️ Избранное</div>
+        <div class="menu-item" id="menu-settings" onclick="showScreen('settings-screen')">⚙️ Настройки</div>
         
-        <!-- Форма добавления трека -->
-        <input type="text" id="track-name" placeholder="Название трека (например, Bass Boosted)">
-        <input type="url" id="track-url" placeholder="Ссылка на MP3 (прямая ссылка)">
-        <button onclick="addTrack()">➕ Добавить трек</button>
-        
-        <hr style="border-color: var(--input-border); margin: 20px 0;">
-
-        <!-- Списки треков -->
-        <h3 style="margin-bottom: 10px;">Все треки</h3>
-        <div id="tracks-list"></div>
-        
-        <h3 style="margin-top: 20px; margin-bottom: 10px;">⭐ Избранное</h3>
-        <div id="fav-list"></div>
-
-        <button onclick="showScreen('settings-screen')" class="btn-green" style="margin-top: 20px;">⚙️ Настройки</button>
-        <button onclick="logout()" class="btn-green" style="margin-top: 10px;">Выйти</button>
+        <button class="auth-btn" id="logout-btn" onclick="logout()" style="display:none;">Выйти</button>
     </div>
 
-    <!-- ЭКРАН 5: НАСТРОЙКИ -->
-    <div id="settings-screen" class="hidden">
-        <h2>⚙️ Настройки</h2>
-        <p style="font-size: 14px; margin-bottom: 10px;">Выберите тему оформления:</p>
-        <div class="theme-buttons">
-            <button onclick="setTheme('neon')" style="background: #ff4500;">Неон</button>
-            <button onclick="setTheme('light')" style="background: #007bff;">Светлая</button>
-            <button onclick="setTheme('dark')" style="background: #444;">Темная</button>
+    <!-- ПРАВАЯ ЧАСТЬ -->
+    <div class="main-content">
+        
+        <!-- ЭКРАН АВТОРИЗАЦИИ -->
+        <div id="auth-screen">
+            <div class="auth-box">
+                <h2>Вход</h2>
+                <div id="auth-error" class="error"></div>
+                <input type="text" id="username" placeholder="Логин">
+                <input type="password" id="password" placeholder="Пароль">
+                <button onclick="login()">Войти</button>
+                <button class="link-btn" onclick="showScreen('register-screen')">Нет аккаунта? Зарегистрироваться</button>
+            </div>
         </div>
-        <hr style="border-color: var(--input-border); margin: 20px 0;">
-        <p style="font-size: 14px; margin-bottom: 10px;">Служба поддержки:</p>
-        <button onclick="contactSupport()">✉️ Написать в поддержку</button>
-        <button class="btn-link" onclick="showScreen('dashboard-screen')" style="margin-top: 20px;">Назад</button>
+
+        <!-- ЭКРАН РЕГИСТРАЦИИ -->
+        <div id="register-screen" class="hidden">
+            <div class="auth-box">
+                <h2>Регистрация</h2>
+                <div id="reg-error" class="error"></div>
+                <input type="text" id="reg-username" placeholder="Логин">
+                <input type="password" id="reg-password" placeholder="Пароль">
+                <input type="email" id="reg-email" placeholder="Email">
+                <button onclick="register()">Создать аккаунт</button>
+                <button class="link-btn" onclick="showScreen('auth-screen')">Назад</button>
+            </div>
+        </div>
+
+        <!-- ЭКРАН "МОЯ ВОЛНА" -->
+        <div id="wave-screen" class="hidden">
+            <div class="header-title">🌊 Моя волна</div>
+            <p style="color: #888; margin-bottom: 20px;">Бесконечный поток случайных треков. Нажмите на трек, чтобы слушать.</p>
+            <div class="tracks-grid" id="wave-list"></div>
+        </div>
+
+        <!-- ЭКРАН ИЗБРАННОГО -->
+        <div id="fav-screen" class="hidden">
+            <div class="header-title">Избранное ❤️</div>
+            <div class="tracks-grid" id="fav-list"></div>
+        </div>
+
+        <!-- ЭКРАН НАСТРОЕК -->
+        <div id="settings-screen" class="hidden">
+            <div class="header-title">Настройки</div>
+            <div style="background: #111; padding: 20px; border-radius: 12px;">
+                <p style="margin-bottom: 15px; font-weight: bold;">Поддержка:</p>
+                <button onclick="contactSupport()" style="padding: 10px 20px; background: #ffdb4d; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Написать нам</button>
+            </div>
+        </div>
+
     </div>
-</div>
+
+    <!-- ПЛЕЕР -->
+    <div class="player-bar hidden" id="player-bar">
+        <div class="player-cover" id="player-cover">🎵</div>
+        <div class="player-info">
+            <div class="player-title" id="player-title">Выберите трек</div>
+            <div class="player-artist" id="player-artist">Неизвестен</div>
+        </div>
+        <div class="player-controls">
+            <button class="play-btn" id="play-pause-btn" onclick="togglePlay()">▶</button>
+        </div>
+        <audio id="audio-player" onended="nextTrack()"></audio>
+    </div>
 
 <script>
     let users = JSON.parse(localStorage.getItem('myAppUsers')) || {};
     let currentUser = null;
-
-    window.onload = function() {
-        const savedTheme = localStorage.getItem('siteTheme') || 'neon';
-        setTheme(savedTheme);
-    };
-
-    function saveUsers() { localStorage.setItem('myAppUsers', JSON.stringify(users)); }
     
-    function setTheme(themeName) {
-        document.body.className = '';
-        if (themeName === 'light') document.body.classList.add('theme-light');
-        else if (themeName === 'dark') document.body.classList.add('theme-dark');
-        localStorage.setItem('siteTheme', themeName);
-    }
+    // Состояние плеера
+    let currentPlaylist = [];
+    let currentTrackIndex = -1;
+    let isPlaying = false;
+    const audio = document.getElementById('audio-player');
 
-    function contactSupport() {
-        const email = "support@moto-site.ru"; // Ваша почта
-        window.location.href = `mailto:${email}?subject=Вопрос в поддержку`;
-    }
-
+    // --- АВТОРИЗАЦИЯ ---
     function showScreen(screenId) {
-        const screens = ['auth-screen', 'register-screen', 'recover-screen', 'dashboard-screen', 'settings-screen'];
+        const screens = ['auth-screen', 'register-screen', 'wave-screen', 'fav-screen', 'settings-screen'];
         screens.forEach(id => document.getElementById(id).classList.add('hidden'));
         document.getElementById(screenId).classList.remove('hidden');
-        
         document.getElementById('auth-error').innerText = '';
         document.getElementById('reg-error').innerText = '';
-        document.getElementById('reg-success').innerText = '';
-        document.getElementById('recover-error').innerText = '';
-        document.getElementById('recover-success').innerText = '';
+        
+        if (screenId === 'auth-screen' || screenId === 'register-screen') {
+            document.getElementById('player-bar').classList.add('hidden');
+        } else {
+            document.getElementById('player-bar').classList.remove('hidden');
+        }
     }
 
     function register() {
         const u = document.getElementById('reg-username').value.trim();
         const p = document.getElementById('reg-password').value;
-        const phone = document.getElementById('reg-phone').value.trim();
         const email = document.getElementById('reg-email').value.trim();
-        const err = document.getElementById('reg-error');
-        const succ = document.getElementById('reg-success');
         
-        err.innerText = ''; succ.innerText = '';
-
-        if (!u || !p || !phone || !email) return err.innerText = 'Заполните все поля!';
-        if (users[u]) return err.innerText = 'Такой логин уже есть';
+        if (!u || !p || !email) return document.getElementById('reg-error').innerText = 'Заполните все поля!';
+        if (users[u]) return document.getElementById('reg-error').innerText = 'Логин занят';
         
-        // Создаем пустые массивы для треков и избранного
-        users[u] = { password: p, phone: phone, email: email, tracks: [], favorites: [] };
-        saveUsers();
-        
-        succ.innerText = '✅ Успешно! Теперь можете войти.';
-        setTimeout(() => {
-            showScreen('auth-screen');
-            document.getElementById('username').value = u; 
-        }, 1500);
+        users[u] = { password: p, email: email, favorites: [] };
+        saveData();
+        alert('Успешно! Войдите.');
+        showScreen('auth-screen');
     }
 
     function login() {
@@ -251,162 +202,198 @@
         
         if (users[u] && users[u].password === p) {
             currentUser = u;
-            document.getElementById('user-display').innerText = u;
-            showScreen('dashboard-screen');
-            renderTracks();
+            document.getElementById('logout-btn').style.display = 'block';
+            showScreen('wave-screen');
+            loadWave(); // Сразу включаем волну
         } else {
             document.getElementById('auth-error').innerText = 'Неверный логин или пароль';
-            setTimeout(() => document.getElementById('auth-error').innerText = '', 3000);
-        }
-    }
-
-    function recoverPassword() {
-        const email = document.getElementById('recover-email').value.trim();
-        const err = document.getElementById('recover-error');
-        const succ = document.getElementById('recover-success');
-        err.innerText = ''; succ.innerText = '';
-
-        if (!email) return err.innerText = 'Введите email';
-
-        let foundUser = null;
-        for (let login in users) {
-            if (users[login].email === email) { foundUser = login; break; }
-        }
-
-        if (foundUser) {
-            succ.innerHTML = `✅ Найдено!<br>Логин: <b>${foundUser}</b><br>Пароль: <b>${users[foundUser].password}</b>`;
-        } else {
-            err.innerText = 'Пользователь с такой почтой не найден.';
         }
     }
 
     function logout() {
         currentUser = null;
-        document.getElementById('username').value = '';
-        document.getElementById('password').value = '';
+        audio.pause();
+        document.getElementById('logout-btn').style.display = 'none';
         showScreen('auth-screen');
     }
 
-    // --- ДОБАВЛЕНИЕ ТРЕКА ---
-    function addTrack() {
-        const name = document.getElementById('track-name').value.trim();
-        const url = document.getElementById('track-url').value.trim();
+    function saveData() { localStorage.setItem('myAppUsers', JSON.stringify(users)); }
 
-        if (!name || !url) {
-            alert("Заполните название и ссылку!");
+    // --- "МОЯ ВОЛНА" (Загрузка с бесплатного API Audius) ---
+    async function loadWave() {
+        const list = document.getElementById('wave-list');
+        list.innerHTML = '<div class="loader">🌊 Подбираем треки для вас...</div>';
+
+        try {
+            // Запрос к открытому API Audius (бесплатная музыка)
+            const response = await fetch('https://discoveryprovider.audius.co/v1/tracks/trending?app_name=MyMotoApp&limit=15');
+            const data = await response.json();
+            
+            list.innerHTML = ''; // Очищаем лоадер
+            let waveTracks = [];
+
+            data.data.forEach(track => {
+                // Берем обложку и ссылку на стриминг
+                const coverUrl = track.artwork ? track.artwork['150x150'] : '';
+                const streamUrl = `https://discoveryprovider.audius.co/v1/tracks/${track.id}/stream?app_name=MyMotoApp`;
+                
+                const trackData = {
+                    id: track.id,
+                    name: track.title,
+                    artist: track.user.name,
+                    cover: coverUrl,
+                    url: streamUrl
+                };
+                waveTracks.push(trackData);
+
+                // Отрисовка карточки
+                const isFav = users[currentUser].favorites.some(f => f.id === track.id);
+                list.innerHTML += `
+                    <div class="track-card">
+                        <div class="track-cover" onclick="playFromWave(${track.id})">
+                            ${coverUrl ? `<img src="${coverUrl}" alt="cover">` : '🎵'}
+                        </div>
+                        <div class="track-name" title="${track.title}">${track.title}</div>
+                        <div class="track-artist" title="${track.user.name}">${track.user.name}</div>
+                        <div class="track-actions">
+                            <button class="${isFav ? 'fav-active' : ''}" onclick="toggleFavWave(${track.id})">${isFav ? '❤️' : '🤍'}</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Сохраняем текущий плейлист волны в память
+            window.currentWave = waveTracks;
+
+        } catch (error) {
+            list.innerHTML = '<div class="loader" style="color: red;">Ошибка загрузки. Проверьте интернет.</div>';
+            console.error(error);
+        }
+    }
+
+    // --- ИЗБРАННОЕ ---
+    function toggleFavWave(trackId) {
+        const track = window.currentWave.find(t => t.id === trackId);
+        const favs = users[currentUser].favorites;
+        const index = favs.findIndex(f => f.id === trackId);
+
+        if (index === -1) {
+            favs.push(track); // Добавляем
+        } else {
+            favs.splice(index, 1); // Удаляем
+        }
+        
+        saveData();
+        loadWave(); // Перерисовываем сердечки
+        if (document.getElementById('fav-screen').classList.contains('hidden') === false) {
+            renderFavorites();
+        }
+    }
+
+    function renderFavorites() {
+        const list = document.getElementById('fav-list');
+        list.innerHTML = '';
+        const favs = users[currentUser].favorites || [];
+
+        if (favs.length === 0) {
+            list.innerHTML = '<p style="color: #888;">Пока пусто. Добавьте треки из "Моей волны".</p>';
             return;
         }
 
-        // Добавляем трек в массив пользователя
-        users[currentUser].tracks.push({ name: name, url: url });
-        saveUsers();
-        
-        // Очищаем поля
-        document.getElementById('track-name').value = '';
-        document.getElementById('track-url').value = '';
-        
-        renderTracks();
-    }
-
-    // --- ОТРИСОВКА ТРЕКОВ ---
-    function renderTracks() {
-        const list = document.getElementById('tracks-list');
-        const favList = document.getElementById('fav-list');
-        list.innerHTML = '';
-        favList.innerHTML = '';
-
-        const tracks = users[currentUser].tracks || [];
-        const favorites = users[currentUser].favorites || [];
-
-        // 1. Отрисовка всех треков
-        if (tracks.length === 0) {
-            list.innerHTML = '<p style="color: #888; font-size: 14px;">Список пуст. Добавьте первый трек!</p>';
-        } else {
-            tracks.forEach((track, index) => {
-                const isFav = favorites.some(f => f.url === track.url);
-                const div = document.createElement('div');
-                div.className = 'track';
-                div.innerHTML = `
-                    <div class="track-title">🎵 ${track.name}</div>
-                    <audio controls src="${track.url}"></audio>
-                    <div class="track-actions">
-                        <button class="btn-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite(${index})">
-                            ${isFav ? '❤️ В избранном' : '🤍 В избранное'}
-                        </button>
-                        <button class="btn-download" onclick="downloadTrack('${track.url}', '${track.name}')">📥 Скачать</button>
-                        <button style="background:#d32f2f;" onclick="deleteTrack(${index})">🗑️</button>
+        favs.forEach((track, index) => {
+            list.innerHTML += `
+                <div class="track-card">
+                    <div class="track-cover" onclick="playFromFav(${index})">
+                        ${track.cover ? `<img src="${track.cover}">` : '🎵'}
                     </div>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        // 2. Отрисовка избранного
-        if (favorites.length === 0) {
-            favList.innerHTML = '<p style="color: #888; font-size: 14px;">Нет избранных треков.</p>';
-        } else {
-            favorites.forEach((track, index) => {
-                const div = document.createElement('div');
-                div.className = 'track';
-                div.innerHTML = `
-                    <div class="track-title">⭐ ${track.name}</div>
-                    <audio controls src="${track.url}"></audio>
+                    <div class="track-name" title="${track.name}">${track.name}</div>
+                    <div class="track-artist" title="${track.artist}">${track.artist}</div>
                     <div class="track-actions">
-                        <button class="btn-fav active" onclick="removeFavorite(${index})">❌ Убрать</button>
-                        <button class="btn-download" onclick="downloadTrack('${track.url}', '${track.name}')">📥 Скачать</button>
+                        <button class="fav-active" onclick="removeFav(${index})">❤️</button>
                     </div>
-                `;
-                favList.appendChild(div);
-            });
-        }
+                </div>
+            `;
+        });
     }
 
-    // --- ДОБАВИТЬ/УБРАТЬ ИЗ ИЗБРАННОГО ---
-    function toggleFavorite(index) {
-        const track = users[currentUser].tracks[index];
-        const favorites = users[currentUser].favorites;
-        
-        // Проверяем, есть ли уже в избранном
-        const favIndex = favorites.findIndex(f => f.url === track.url);
-        
-        if (favIndex === -1) {
-            // Добавляем
-            favorites.push(track);
-        } else {
-            // Удаляем
-            favorites.splice(favIndex, 1);
-        }
-        
-        saveUsers();
-        renderTracks();
-    }
-
-    function removeFavorite(index) {
+    function removeFav(index) {
         users[currentUser].favorites.splice(index, 1);
-        saveUsers();
-        renderTracks();
+        saveData();
+        renderFavorites();
     }
 
-    // --- УДАЛИТЬ ТРЕК ---
-    function deleteTrack(index) {
-        if(confirm("Удалить этот трек?")) {
-            users[currentUser].tracks.splice(index, 1);
-            saveUsers();
-            renderTracks();
+    // --- ПЛЕЕР ---
+    function playFromWave(trackId) {
+        const track = window.currentWave.find(t => t.id === trackId);
+        currentPlaylist = window.currentWave;
+        currentTrackIndex = currentPlaylist.findIndex(t => t.id === trackId);
+        loadAndPlay();
+    }
+
+    function playFromFav(index) {
+        currentPlaylist = users[currentUser].favorites;
+        currentTrackIndex = index;
+        loadAndPlay();
+    }
+
+    function loadAndPlay() {
+        const track = currentPlaylist[currentTrackIndex];
+        if (!track) return;
+
+        document.getElementById('player-title').innerText = track.name;
+        document.getElementById('player-artist').innerText = track.artist;
+        
+        const coverBox = document.getElementById('player-cover');
+        if (track.cover) {
+            coverBox.innerHTML = `<img src="${track.cover}">`;
+        } else {
+            coverBox.innerHTML = '🎵';
+        }
+
+        audio.src = track.url;
+        audio.play().catch(e => console.log("Ошибка воспроизведения:", e));
+        isPlaying = true;
+        document.getElementById('play-pause-btn').innerText = '⏸';
+    }
+
+    function togglePlay() {
+        if (!audio.src) return;
+        if (isPlaying) {
+            audio.pause();
+            document.getElementById('play-pause-btn').innerText = '▶';
+        } else {
+            audio.play();
+            document.getElementById('play-pause-btn').innerText = '⏸';
+        }
+        isPlaying = !isPlaying;
+    }
+
+    function nextTrack() {
+        if (currentTrackIndex < currentPlaylist.length - 1) {
+            currentTrackIndex++;
+            loadAndPlay();
+        } else {
+            // Если плейлист закончился, включаем следующую волну
+            if (currentPlaylist === window.currentWave) {
+                loadWave().then(() => {
+                    // Автоматически включаем первый трек из новой волны
+                    setTimeout(() => {
+                        if(window.currentWave.length > 0) playFromWave(window.currentWave[0].id);
+                    }, 1000);
+                });
+            }
         }
     }
 
-    // --- СКАЧИВАНИЕ ---
-    function downloadTrack(url, name) {
-        // Создаем временную ссылку для скачивания
-        const a = document.createElement('a');
-        a.href = url;
-        // Пытаемся дать файлу красивое имя
-        a.download = name + ".mp3"; 
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+    function contactSupport() {
+        window.location.href = "mailto:support@moto-site.ru?subject=Вопрос в поддержку";
     }
+
+    // Переключение меню
+    document.getElementById('menu-wave').onclick = () => { showScreen('wave-screen'); loadWave(); };
+    document.getElementById('menu-fav').onclick = () => { showScreen('fav-screen'); renderFavorites(); };
+    document.getElementById('menu-settings').onclick = () => { showScreen('settings-screen'); };
+
 </script>
 
 </body>
