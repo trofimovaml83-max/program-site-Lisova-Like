@@ -23,7 +23,7 @@
         /* --- ГЛАВНАЯ ОБЛАСТЬ --- */
         .main-area { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
 
-        /* --- ЭКРАН "NOW PLAYING" (Как на скрине) --- */
+        /* --- ЭКРАН "NOW PLAYING" (Точь-в-точь как на фото) --- */
         .now-playing-screen {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -31,52 +31,59 @@
         }
         .now-playing-screen.active { opacity: 1; pointer-events: auto; }
 
-        /* Размытый фон (свечение) */
+        /* Размытый фиолетовый фон (свечение) */
         .bg-glow {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background-size: cover; background-position: center;
-            filter: blur(80px) brightness(0.6); z-index: -1;
+            filter: blur(100px) brightness(0.8) saturate(1.5); /* Усиливаем неон */
+            z-index: -2;
             transition: background-image 0.5s;
         }
         /* Затемнение поверх свечения */
-        .bg-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: -1; }
+        .bg-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: -1; }
 
         /* Огромное имя артиста */
         .huge-artist {
-            font-size: 8vw; font-weight: 900; text-align: center; letter-spacing: -2px;
-            text-shadow: 0 0 30px rgba(255,255,255,0.2); margin-bottom: 20px;
+            font-size: 8vw; font-weight: 900; text-align: center; letter-spacing: -3px;
+            color: #fff; margin-bottom: 30px;
+            text-shadow: 0 0 40px rgba(255,255,255,0.2);
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 90%;
+            position: relative; z-index: 1;
         }
 
-        /* Большая обложка */
+        /* Обложка */
         .big-cover {
-            width: 280px; height: 280px; border-radius: 12px; object-fit: cover;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5); margin-bottom: 30px;
-            background: #222;
+            width: 240px; height: 240px; border-radius: 8px; object-fit: cover;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6); margin-bottom: 40px;
+            background: #222; position: relative; z-index: 1;
         }
 
-        /* Панель управления (Плашка с названием) */
+        /* Плашка с названием трека и сердечком */
         .player-panel {
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px);
-            border-radius: 30px; padding: 10px 30px; display: flex; align-items: center; gap: 20px;
-            margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(15px);
+            border-radius: 30px; padding: 8px 20px; display: flex; align-items: center; gap: 15px;
+            margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.1);
+            width: 80%; max-width: 400px; justify-content: space-between;
+            position: relative; z-index: 1;
         }
-        .panel-title { font-size: 18px; font-weight: bold; }
-        .icon-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; opacity: 0.7; transition: 0.2s; }
+        .panel-title { font-size: 18px; font-weight: bold; flex: 1; text-align: center; }
+        .icon-btn { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; opacity: 0.8; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .icon-btn:hover { opacity: 1; color: #ffdb4d; }
 
         /* Кнопки плей/пауза */
-        .controls { display: flex; align-items: center; gap: 30px; }
+        .controls { display: flex; align-items: center; gap: 40px; position: relative; z-index: 1; }
+        
         .big-play-btn {
             width: 70px; height: 70px; border-radius: 50%; background: rgba(255,255,255,0.2);
-            border: none; color: #fff; font-size: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            border: none; color: #fff; font-size: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center;
             transition: 0.2s; backdrop-filter: blur(10px);
         }
         .big-play-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
-        .ctrl-btn { background: none; border: none; color: #aaa; font-size: 24px; cursor: pointer; transition: 0.2s; }
-        .ctrl-btn:hover { color: #fff; }
+        
+        .ctrl-btn { background: none; border: none; color: #ccc; font-size: 32px; cursor: pointer; transition: 0.2s; opacity: 0.7; }
+        .ctrl-btn:hover { color: #fff; opacity: 1; }
 
-        /* --- СПИСКИ ТРЕКОВ (Волна/Избранное) --- */
+        /* --- СПИСКИ ТРЕКОВ --- */
         .lists-screen { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; padding: 40px; background: #000; z-index: 20; transition: transform 0.3s; }
         .lists-screen.hidden { transform: translateX(-100%); }
         
@@ -89,7 +96,7 @@
         .track-artist { font-size: 12px; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* Авторизация */
-        .auth-box { max-width: 400px; margin: 100px auto; background: #111; padding: 30px; border-radius: 16px; border: 1px solid #333; }
+        .auth-box { max-width: 400px; margin: 100px auto; background: #111; padding: 30px; border-radius: 16px; border: 1px solid #333; position: relative; z-index: 50;}
         .auth-box h2 { margin-bottom: 20px; color: #ffdb4d; text-align: center; }
         .auth-box input { width: 100%; padding: 12px; margin-bottom: 10px; background: #222; border: 1px solid #333; border-radius: 8px; color: #fff; }
         .auth-box button { width: 100%; padding: 12px; background: #ffdb4d; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
@@ -114,8 +121,8 @@
     <!-- ГЛАВНАЯ ОБЛАСТЬ -->
     <div class="main-area">
 
-        <!-- ЭКРАН АВТОРИЗАЦИИ -->
-        <div id="auth-screen" style="z-index: 50; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #000; display: flex; justify-content: center; align-items: center;">
+        <!-- АВТОРИЗАЦИЯ -->
+        <div id="auth-screen" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #000; display: flex; justify-content: center; align-items: center;">
             <div class="auth-box" style="margin: 0;">
                 <h2>Вход в систему</h2>
                 <div id="auth-error" class="error"></div>
@@ -126,8 +133,7 @@
             </div>
         </div>
 
-        <!-- ЭКРАН РЕГИСТРАЦИИ -->
-        <div id="register-screen" class="hidden" style="z-index: 50; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #000; display: flex; justify-content: center; align-items: center;">
+        <div id="register-screen" class="hidden" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #000; display: flex; justify-content: center; align-items: center;">
             <div class="auth-box" style="margin: 0;">
                 <h2>Регистрация</h2>
                 <div id="reg-error" class="error"></div>
@@ -139,27 +145,29 @@
             </div>
         </div>
 
-        <!-- ЭКРАН СПИСКОВ (Волна и Избранное) -->
+        <!-- СПИСКИ ТРЕКОВ -->
         <div id="lists-screen" class="lists-screen">
             <div class="header-title" id="list-title">Моя волна 🌊</div>
             <div class="tracks-grid" id="tracks-container"></div>
         </div>
 
-        <!-- ЭКРАН "СЕЙЧАС ИГРАЕТ" (Как на скриншоте) -->
+        <!-- ЭКРАН "СЕЙЧАС ИГРАЕТ" (КАК НА ФОТО) -->
         <div id="now-playing-screen" class="now-playing-screen">
             <div class="bg-glow" id="bg-glow"></div>
             <div class="bg-overlay"></div>
             
             <div class="huge-artist" id="huge-artist">Исполнитель</div>
             
-            <img src="" id="big-cover" class="big-cover" alt="Обложка" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'280\' height=\'280\'><rect width=\'280\' height=\'280\' fill=\'%23333\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'100\'>🎵</text></svg>'">
+            <img src="" id="big-cover" class="big-cover" alt="Обложка" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'240\' height=\'240\'><rect width=\'240\' height=\'240\' fill=\'%23333\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'80\'>🎵</text></svg>'">
             
+            <!-- Плашка как в Яндексе -->
             <div class="player-panel">
-                <button class="icon-btn" onclick="toggleFavCurrent()" id="fav-current-btn">🤍</button>
+                <button class="icon-btn" onclick="toggleFavCurrent()" id="fav-current-btn" title="В избранное">🤍</button>
                 <div class="panel-title" id="panel-title">Название трека</div>
-                <button class="icon-btn">•••</button>
+                <button class="icon-btn" style="font-size: 16px;">•••</button>
             </div>
 
+            <!-- Кнопки управления -->
             <div class="controls">
                 <button class="ctrl-btn" onclick="prevTrack()">⏮</button>
                 <button class="big-play-btn" id="play-pause-btn" onclick="togglePlay()">⏸</button>
@@ -176,15 +184,13 @@
     let users = JSON.parse(localStorage.getItem('myAppUsers')) || {};
     let currentUser = null;
     
-    // Состояние
     let currentPlaylist = [];
     let currentTrackIndex = -1;
     let isPlaying = false;
-    let currentView = 'wave'; // 'wave' или 'fav'
+    let currentView = 'wave';
 
     const audio = document.getElementById('audio-player');
 
-    // --- АВТОРИЗАЦИЯ ---
     function register() {
         const u = document.getElementById('reg-username').value.trim();
         const p = document.getElementById('reg-password').value;
@@ -207,8 +213,6 @@
         if (users[u] && users[u].password === p) {
             currentUser = u;
             document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('nav-logout').style.display = 'block';
-            // Показываем списки при входе
             document.getElementById('lists-screen').classList.remove('hidden');
             loadWave();
         } else {
@@ -222,29 +226,25 @@
         document.getElementById('now-playing-screen').classList.remove('active');
         document.getElementById('lists-screen').classList.add('hidden');
         document.getElementById('auth-screen').classList.remove('hidden');
-        document.getElementById('nav-logout').style.display = 'none';
     }
 
     function saveData() { localStorage.setItem('myAppUsers', JSON.stringify(users)); }
 
-    // --- НАВИГАЦИЯ ---
     document.getElementById('nav-wave').onclick = () => { 
         currentView = 'wave'; 
         document.getElementById('list-title').innerText = "Моя волна 🌊";
         document.getElementById('lists-screen').classList.remove('hidden');
         loadWave(); 
     };
-    
     document.getElementById('nav-fav').onclick = () => { 
         currentView = 'fav'; 
         document.getElementById('list-title').innerText = "Избранное ❤️";
         document.getElementById('lists-screen').classList.remove('hidden');
         renderFavorites(); 
     };
-    
     document.getElementById('nav-logout').onclick = logout;
 
-    // --- ЗАГРУЗКА МУЗЫКИ (API Audius) ---
+    // --- API Audius ---
     async function loadWave() {
         const container = document.getElementById('tracks-container');
         container.innerHTML = '<div class="loader">🌊 Подбираем треки...</div>';
@@ -254,7 +254,7 @@
             const data = await response.json();
             
             container.innerHTML = '';
-            window.currentWave = []; // Глобальное хранилище текущей волны
+            window.currentWave = [];
 
             data.data.forEach(track => {
                 const coverUrl = track.artwork ? track.artwork['150x150'] : '';
@@ -265,18 +265,16 @@
                 };
                 window.currentWave.push(trackData);
 
-                const isFav = users[currentUser].favorites.some(f => f.id === track.id);
-                
                 container.innerHTML += `
                     <div class="track-card" onclick="playTrack(${track.id})">
-                        <img class="track-cover" src="${coverUrl || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\'><rect width=\'150\' height=\'150\' fill=\'%23333\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'50\'>🎵</text></svg>'}">
+                        <img class="track-cover" src="${coverUrl || ''}">
                         <div class="track-name">${track.title}</div>
                         <div class="track-artist">${track.user.name}</div>
                     </div>
                 `;
             });
         } catch (error) {
-            container.innerHTML = '<div class="loader" style="color: red;">Ошибка сети. Попробуйте позже.</div>';
+            container.innerHTML = '<div class="loader" style="color: red;">Ошибка загрузки.</div>';
         }
     }
 
@@ -286,14 +284,14 @@
         container.innerHTML = '';
 
         if (favs.length === 0) {
-            container.innerHTML = '<p style="color: #888; grid-column: 1/-1;">Пока пусто. Добавьте треки из "Моей волны".</p>';
+            container.innerHTML = '<p style="color: #888; grid-column: 1/-1;">Пока пусто.</p>';
             return;
         }
 
         favs.forEach(track => {
             container.innerHTML += `
                 <div class="track-card" onclick="playTrack('${track.id}')">
-                    <img class="track-cover" src="${track.cover || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\'><rect width=\'150\' height=\'150\' fill=\'%23333\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'50\'>🎵</text></svg>'}">
+                    <img class="track-cover" src="${track.cover || ''}">
                     <div class="track-name">${track.name}</div>
                     <div class="track-artist">${track.artist}</div>
                 </div>
@@ -301,17 +299,11 @@
         });
     }
 
-    // --- ПЛЕЕР (Экран "Сейчас играет") ---
     function playTrack(trackId) {
-        if (currentView === 'wave') {
-            currentPlaylist = window.currentWave;
-        } else {
-            currentPlaylist = users[currentUser].favorites;
-        }
+        if (currentView === 'wave') currentPlaylist = window.currentWave;
+        else currentPlaylist = users[currentUser].favorites;
 
-        // Ищем индекс трека (id может быть числом или строкой)
         currentTrackIndex = currentPlaylist.findIndex(t => String(t.id) === String(trackId));
-        
         if (currentTrackIndex === -1) return;
 
         loadAndPlay();
@@ -321,26 +313,22 @@
         const track = currentPlaylist[currentTrackIndex];
         if (!track) return;
 
-        // 1. Переключаем экран на "Now Playing"
+        // Включаем полноэкранный режим
         document.getElementById('lists-screen').classList.add('hidden');
         document.getElementById('now-playing-screen').classList.add('active');
 
-        // 2. Заполняем данные
+        // Заполняем данные
         document.getElementById('huge-artist').innerText = track.artist;
         document.getElementById('panel-title').innerText = track.name;
         document.getElementById('big-cover').src = track.cover || '';
         
-        // 3. Красим фон в цвет обложки (или ставим саму обложку)
+        // Красим фон
         if (track.cover) {
             document.getElementById('bg-glow').style.backgroundImage = `url('${track.cover}')`;
-        } else {
-            document.getElementById('bg-glow').style.backgroundImage = 'linear-gradient(45deg, #ffdb4d, #ff4500)';
         }
 
-        // 4. Проверяем избранное
         updateFavIcon(track.id);
 
-        // 5. Играем
         audio.src = track.url;
         audio.play().catch(e => console.log("Ошибка аудио:", e));
         isPlaying = true;
@@ -364,7 +352,6 @@
             currentTrackIndex++;
             loadAndPlay();
         } else {
-            // Если волна закончилась - грузим новую
             if (currentView === 'wave') {
                 loadWave().then(() => {
                     setTimeout(() => { if(window.currentWave.length) playTrack(window.currentWave[0].id); }, 500);
@@ -380,7 +367,6 @@
         }
     }
 
-    // --- ИЗБРАННОЕ ---
     function toggleFavCurrent() {
         const track = currentPlaylist[currentTrackIndex];
         if (!track) return;
@@ -393,8 +379,6 @@
 
         saveData();
         updateFavIcon(track.id);
-        
-        // Если мы в меню избранного, обновим список
         if (currentView === 'fav') renderFavorites();
     }
 
@@ -404,8 +388,7 @@
         document.getElementById('fav-current-btn').style.color = isFav ? '#ff4500' : '#fff';
     }
 
-    // --- ВОЗВРАТ К СПИСКАМ ---
-    // Если нажать на пустое место на экране "Now Playing", вернемся назад
+    // Возврат к списку по клику на фон
     document.getElementById('now-playing-screen').addEventListener('click', function(e) {
         if (e.target === this || e.target.classList.contains('bg-glow') || e.target.classList.contains('bg-overlay')) {
             this.classList.remove('active');
