@@ -7,181 +7,184 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
     
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            font-family: 'Segoe UI', -apple-system, sans-serif; 
-            background: #000; color: #fff;
-            height: 100vh; display: flex; overflow: hidden;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, sans-serif; }
+        body { background: #000; color: #fff; height: 100vh; display: flex; overflow: hidden; }
 
         /* --- БОКОВОЕ МЕНЮ --- */
         .sidebar {
-            width: 250px; background: #0a0a0a; padding: 20px;
-            display: flex; flex-direction: column; border-right: 1px solid #222;
+            width: 80px; background: #0a0a0a; display: flex; flex-direction: column; align-items: center; padding: 20px 0;
+            border-right: 1px solid #222; z-index: 100;
         }
-        .logo { font-size: 24px; font-weight: bold; color: #ffdb4d; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
-        .menu-item { padding: 12px 10px; color: #aaa; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.2s; font-weight: 500; }
-        .menu-item:hover { background: #1a1a1a; color: #fff; }
-        .menu-item.active { color: #ffdb4d; background: #111; }
-        .auth-btn { background: #ffdb4d; color: #000; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: auto; }
-        .auth-btn:hover { background: #ffe680; }
+        .sidebar .logo { font-size: 24px; margin-bottom: 30px; }
+        .sidebar .nav-icon { font-size: 24px; padding: 15px 0; cursor: pointer; color: #666; transition: 0.2s; }
+        .sidebar .nav-icon:hover, .sidebar .nav-icon.active { color: #ffdb4d; }
+        .sidebar .nav-icon.bottom { margin-top: auto; }
 
         /* --- ГЛАВНАЯ ОБЛАСТЬ --- */
-        .main-content {
-            flex: 1; background: linear-gradient(180deg, #111 0%, #000 100%);
-            padding: 40px; overflow-y: auto; position: relative; padding-bottom: 120px;
+        .main-area { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+
+        /* --- ЭКРАН "NOW PLAYING" (Как на скрине) --- */
+        .now-playing-screen {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 10; transition: opacity 0.5s; opacity: 0; pointer-events: none;
         }
+        .now-playing-screen.active { opacity: 1; pointer-events: auto; }
+
+        /* Размытый фон (свечение) */
+        .bg-glow {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-size: cover; background-position: center;
+            filter: blur(80px) brightness(0.6); z-index: -1;
+            transition: background-image 0.5s;
+        }
+        /* Затемнение поверх свечения */
+        .bg-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: -1; }
+
+        /* Огромное имя артиста */
+        .huge-artist {
+            font-size: 8vw; font-weight: 900; text-align: center; letter-spacing: -2px;
+            text-shadow: 0 0 30px rgba(255,255,255,0.2); margin-bottom: 20px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 90%;
+        }
+
+        /* Большая обложка */
+        .big-cover {
+            width: 280px; height: 280px; border-radius: 12px; object-fit: cover;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); margin-bottom: 30px;
+            background: #222;
+        }
+
+        /* Панель управления (Плашка с названием) */
+        .player-panel {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px);
+            border-radius: 30px; padding: 10px 30px; display: flex; align-items: center; gap: 20px;
+            margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .panel-title { font-size: 18px; font-weight: bold; }
+        .icon-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; opacity: 0.7; transition: 0.2s; }
+        .icon-btn:hover { opacity: 1; color: #ffdb4d; }
+
+        /* Кнопки плей/пауза */
+        .controls { display: flex; align-items: center; gap: 30px; }
+        .big-play-btn {
+            width: 70px; height: 70px; border-radius: 50%; background: rgba(255,255,255,0.2);
+            border: none; color: #fff; font-size: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: 0.2s; backdrop-filter: blur(10px);
+        }
+        .big-play-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
+        .ctrl-btn { background: none; border: none; color: #aaa; font-size: 24px; cursor: pointer; transition: 0.2s; }
+        .ctrl-btn:hover { color: #fff; }
+
+        /* --- СПИСКИ ТРЕКОВ (Волна/Избранное) --- */
+        .lists-screen { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; padding: 40px; background: #000; z-index: 20; transition: transform 0.3s; }
+        .lists-screen.hidden { transform: translateX(-100%); }
+        
+        .header-title { font-size: 32px; font-weight: bold; margin-bottom: 20px; }
+        .tracks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
+        .track-card { background: #111; padding: 15px; border-radius: 12px; cursor: pointer; transition: 0.2s; }
+        .track-card:hover { background: #222; }
+        .track-cover { width: 100%; aspect-ratio: 1; border-radius: 8px; object-fit: cover; margin-bottom: 10px; background: #333; }
+        .track-name { font-weight: bold; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .track-artist { font-size: 12px; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* Авторизация */
         .auth-box { max-width: 400px; margin: 100px auto; background: #111; padding: 30px; border-radius: 16px; border: 1px solid #333; }
         .auth-box h2 { margin-bottom: 20px; color: #ffdb4d; text-align: center; }
         .auth-box input { width: 100%; padding: 12px; margin-bottom: 10px; background: #222; border: 1px solid #333; border-radius: 8px; color: #fff; }
-        .auth-box input:focus { outline: none; border-color: #ffdb4d; }
         .auth-box button { width: 100%; padding: 12px; background: #ffdb4d; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .error { color: #ff5252; text-align: center; margin-bottom: 10px; font-size: 14px; }
         .link-btn { background: none; border: none; color: #aaa; cursor: pointer; text-decoration: underline; margin-top: 15px; width: 100%; font-size: 14px; }
-
-        .hidden { display: none !important; }
-        .header-title { font-size: 32px; font-weight: bold; margin-bottom: 30px; }
-
-        /* Сетка треков */
-        .tracks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
-        .track-card { background: #111; padding: 15px; border-radius: 12px; transition: 0.2s; cursor: pointer; position: relative; }
-        .track-card:hover { background: #222; }
-        .track-cover { width: 100%; aspect-ratio: 1; background: linear-gradient(45deg, #ffdb4d, #ff4500); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; margin-bottom: 10px; overflow: hidden; }
-        .track-cover img { width: 100%; height: 100%; object-fit: cover; }
-        .track-name { font-weight: bold; font-size: 14px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .track-artist { font-size: 12px; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .track-actions { display: flex; justify-content: space-between; margin-top: 10px; }
-        .track-actions button { background: none; border: none; color: #aaa; cursor: pointer; font-size: 16px; transition: 0.2s; }
-        .track-actions button:hover { color: #ffdb4d; }
-        .fav-active { color: #ff4500 !important; }
-
-        /* ПЛЕЕР ВНИЗУ */
-        .player-bar {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 80px;
-            background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px);
-            border-top: 1px solid #222; display: flex; align-items: center;
-            padding: 0 30px; gap: 20px; z-index: 100;
-        }
-        .player-cover { width: 50px; height: 50px; background: #ffdb4d; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-        .player-cover img { width: 100%; height: 100%; object-fit: cover; }
-        .player-info { width: 250px; }
-        .player-title { font-weight: bold; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .player-artist { font-size: 12px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .player-controls { flex: 1; display: flex; justify-content: center; align-items: center; gap: 20px; }
-        .play-btn { width: 40px; height: 40px; border-radius: 50%; background: #fff; color: #000; border: none; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .play-btn:hover { transform: scale(1.05); }
-        audio { display: none; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         
-        /* Анимация загрузки */
-        .loader { text-align: center; color: #ffdb4d; font-size: 18px; margin-top: 50px; }
+        .hidden { display: none !important; }
+        .loader { text-align: center; color: #ffdb4d; font-size: 18px; margin-top: 50px; grid-column: 1 / -1; }
+        audio { display: none; }
     </style>
 </head>
 <body>
 
-    <!-- ЛЕВОЕ МЕНЮ -->
+    <!-- БОКОВОЕ МЕНЮ -->
     <div class="sidebar">
-        <div class="logo">🎵 Моя Музыка</div>
-        <div class="menu-item active" id="menu-wave" onclick="showScreen('wave-screen'); loadWave()">🌊 Моя волна</div>
-        <div class="menu-item" id="menu-fav" onclick="showScreen('fav-screen')">❤️ Избранное</div>
-        <div class="menu-item" id="menu-settings" onclick="showScreen('settings-screen')">⚙️ Настройки</div>
-        
-        <button class="auth-btn" id="logout-btn" onclick="logout()" style="display:none;">Выйти</button>
+        <div class="logo">🎵</div>
+        <div class="nav-icon active" id="nav-wave" title="Моя волна">🌊</div>
+        <div class="nav-icon" id="nav-fav" title="Избранное">❤️</div>
+        <div class="nav-icon bottom" id="nav-logout" title="Выйти">🚪</div>
     </div>
 
-    <!-- ПРАВАЯ ЧАСТЬ -->
-    <div class="main-content">
-        
+    <!-- ГЛАВНАЯ ОБЛАСТЬ -->
+    <div class="main-area">
+
         <!-- ЭКРАН АВТОРИЗАЦИИ -->
-        <div id="auth-screen">
-            <div class="auth-box">
-                <h2>Вход</h2>
+        <div id="auth-screen" style="z-index: 50; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #000; display: flex; justify-content: center; align-items: center;">
+            <div class="auth-box" style="margin: 0;">
+                <h2>Вход в систему</h2>
                 <div id="auth-error" class="error"></div>
                 <input type="text" id="username" placeholder="Логин">
                 <input type="password" id="password" placeholder="Пароль">
                 <button onclick="login()">Войти</button>
-                <button class="link-btn" onclick="showScreen('register-screen')">Нет аккаунта? Зарегистрироваться</button>
+                <button class="link-btn" onclick="document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('register-screen').classList.remove('hidden');">Нет аккаунта? Регистрация</button>
             </div>
         </div>
 
         <!-- ЭКРАН РЕГИСТРАЦИИ -->
-        <div id="register-screen" class="hidden">
-            <div class="auth-box">
+        <div id="register-screen" class="hidden" style="z-index: 50; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #000; display: flex; justify-content: center; align-items: center;">
+            <div class="auth-box" style="margin: 0;">
                 <h2>Регистрация</h2>
                 <div id="reg-error" class="error"></div>
                 <input type="text" id="reg-username" placeholder="Логин">
                 <input type="password" id="reg-password" placeholder="Пароль">
                 <input type="email" id="reg-email" placeholder="Email">
                 <button onclick="register()">Создать аккаунт</button>
-                <button class="link-btn" onclick="showScreen('auth-screen')">Назад</button>
+                <button class="link-btn" onclick="document.getElementById('register-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.remove('hidden');">Назад</button>
             </div>
         </div>
 
-        <!-- ЭКРАН "МОЯ ВОЛНА" -->
-        <div id="wave-screen" class="hidden">
-            <div class="header-title">🌊 Моя волна</div>
-            <p style="color: #888; margin-bottom: 20px;">Бесконечный поток случайных треков. Нажмите на трек, чтобы слушать.</p>
-            <div class="tracks-grid" id="wave-list"></div>
+        <!-- ЭКРАН СПИСКОВ (Волна и Избранное) -->
+        <div id="lists-screen" class="lists-screen">
+            <div class="header-title" id="list-title">Моя волна 🌊</div>
+            <div class="tracks-grid" id="tracks-container"></div>
         </div>
 
-        <!-- ЭКРАН ИЗБРАННОГО -->
-        <div id="fav-screen" class="hidden">
-            <div class="header-title">Избранное ❤️</div>
-            <div class="tracks-grid" id="fav-list"></div>
-        </div>
+        <!-- ЭКРАН "СЕЙЧАС ИГРАЕТ" (Как на скриншоте) -->
+        <div id="now-playing-screen" class="now-playing-screen">
+            <div class="bg-glow" id="bg-glow"></div>
+            <div class="bg-overlay"></div>
+            
+            <div class="huge-artist" id="huge-artist">Исполнитель</div>
+            
+            <img src="" id="big-cover" class="big-cover" alt="Обложка" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'280\' height=\'280\'><rect width=\'280\' height=\'280\' fill=\'%23333\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'100\'>🎵</text></svg>'">
+            
+            <div class="player-panel">
+                <button class="icon-btn" onclick="toggleFavCurrent()" id="fav-current-btn">🤍</button>
+                <div class="panel-title" id="panel-title">Название трека</div>
+                <button class="icon-btn">•••</button>
+            </div>
 
-        <!-- ЭКРАН НАСТРОЕК -->
-        <div id="settings-screen" class="hidden">
-            <div class="header-title">Настройки</div>
-            <div style="background: #111; padding: 20px; border-radius: 12px;">
-                <p style="margin-bottom: 15px; font-weight: bold;">Поддержка:</p>
-                <button onclick="contactSupport()" style="padding: 10px 20px; background: #ffdb4d; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Написать нам</button>
+            <div class="controls">
+                <button class="ctrl-btn" onclick="prevTrack()">⏮</button>
+                <button class="big-play-btn" id="play-pause-btn" onclick="togglePlay()">⏸</button>
+                <button class="ctrl-btn" onclick="nextTrack()">⏭</button>
             </div>
         </div>
 
     </div>
 
-    <!-- ПЛЕЕР -->
-    <div class="player-bar hidden" id="player-bar">
-        <div class="player-cover" id="player-cover">🎵</div>
-        <div class="player-info">
-            <div class="player-title" id="player-title">Выберите трек</div>
-            <div class="player-artist" id="player-artist">Неизвестен</div>
-        </div>
-        <div class="player-controls">
-            <button class="play-btn" id="play-pause-btn" onclick="togglePlay()">▶</button>
-        </div>
-        <audio id="audio-player" onended="nextTrack()"></audio>
-    </div>
+    <!-- АУДИО -->
+    <audio id="audio-player" onended="nextTrack()"></audio>
 
 <script>
     let users = JSON.parse(localStorage.getItem('myAppUsers')) || {};
     let currentUser = null;
     
-    // Состояние плеера
+    // Состояние
     let currentPlaylist = [];
     let currentTrackIndex = -1;
     let isPlaying = false;
+    let currentView = 'wave'; // 'wave' или 'fav'
+
     const audio = document.getElementById('audio-player');
 
     // --- АВТОРИЗАЦИЯ ---
-    function showScreen(screenId) {
-        const screens = ['auth-screen', 'register-screen', 'wave-screen', 'fav-screen', 'settings-screen'];
-        screens.forEach(id => document.getElementById(id).classList.add('hidden'));
-        document.getElementById(screenId).classList.remove('hidden');
-        document.getElementById('auth-error').innerText = '';
-        document.getElementById('reg-error').innerText = '';
-        
-        if (screenId === 'auth-screen' || screenId === 'register-screen') {
-            document.getElementById('player-bar').classList.add('hidden');
-        } else {
-            document.getElementById('player-bar').classList.remove('hidden');
-        }
-    }
-
     function register() {
         const u = document.getElementById('reg-username').value.trim();
         const p = document.getElementById('reg-password').value;
@@ -193,7 +196,8 @@
         users[u] = { password: p, email: email, favorites: [] };
         saveData();
         alert('Успешно! Войдите.');
-        showScreen('auth-screen');
+        document.getElementById('register-screen').classList.add('hidden');
+        document.getElementById('auth-screen').classList.remove('hidden');
     }
 
     function login() {
@@ -202,9 +206,11 @@
         
         if (users[u] && users[u].password === p) {
             currentUser = u;
-            document.getElementById('logout-btn').style.display = 'block';
-            showScreen('wave-screen');
-            loadWave(); // Сразу включаем волну
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('nav-logout').style.display = 'block';
+            // Показываем списки при входе
+            document.getElementById('lists-screen').classList.remove('hidden');
+            loadWave();
         } else {
             document.getElementById('auth-error').innerText = 'Неверный логин или пароль';
         }
@@ -213,126 +219,101 @@
     function logout() {
         currentUser = null;
         audio.pause();
-        document.getElementById('logout-btn').style.display = 'none';
-        showScreen('auth-screen');
+        document.getElementById('now-playing-screen').classList.remove('active');
+        document.getElementById('lists-screen').classList.add('hidden');
+        document.getElementById('auth-screen').classList.remove('hidden');
+        document.getElementById('nav-logout').style.display = 'none';
     }
 
     function saveData() { localStorage.setItem('myAppUsers', JSON.stringify(users)); }
 
-    // --- "МОЯ ВОЛНА" (Загрузка с бесплатного API Audius) ---
+    // --- НАВИГАЦИЯ ---
+    document.getElementById('nav-wave').onclick = () => { 
+        currentView = 'wave'; 
+        document.getElementById('list-title').innerText = "Моя волна 🌊";
+        document.getElementById('lists-screen').classList.remove('hidden');
+        loadWave(); 
+    };
+    
+    document.getElementById('nav-fav').onclick = () => { 
+        currentView = 'fav'; 
+        document.getElementById('list-title').innerText = "Избранное ❤️";
+        document.getElementById('lists-screen').classList.remove('hidden');
+        renderFavorites(); 
+    };
+    
+    document.getElementById('nav-logout').onclick = logout;
+
+    // --- ЗАГРУЗКА МУЗЫКИ (API Audius) ---
     async function loadWave() {
-        const list = document.getElementById('wave-list');
-        list.innerHTML = '<div class="loader">🌊 Подбираем треки для вас...</div>';
+        const container = document.getElementById('tracks-container');
+        container.innerHTML = '<div class="loader">🌊 Подбираем треки...</div>';
 
         try {
-            // Запрос к открытому API Audius (бесплатная музыка)
             const response = await fetch('https://discoveryprovider.audius.co/v1/tracks/trending?app_name=MyMotoApp&limit=15');
             const data = await response.json();
             
-            list.innerHTML = ''; // Очищаем лоадер
-            let waveTracks = [];
+            container.innerHTML = '';
+            window.currentWave = []; // Глобальное хранилище текущей волны
 
             data.data.forEach(track => {
-                // Берем обложку и ссылку на стриминг
                 const coverUrl = track.artwork ? track.artwork['150x150'] : '';
                 const streamUrl = `https://discoveryprovider.audius.co/v1/tracks/${track.id}/stream?app_name=MyMotoApp`;
                 
                 const trackData = {
-                    id: track.id,
-                    name: track.title,
-                    artist: track.user.name,
-                    cover: coverUrl,
-                    url: streamUrl
+                    id: track.id, name: track.title, artist: track.user.name, cover: coverUrl, url: streamUrl
                 };
-                waveTracks.push(trackData);
+                window.currentWave.push(trackData);
 
-                // Отрисовка карточки
                 const isFav = users[currentUser].favorites.some(f => f.id === track.id);
-                list.innerHTML += `
-                    <div class="track-card">
-                        <div class="track-cover" onclick="playFromWave(${track.id})">
-                            ${coverUrl ? `<img src="${coverUrl}" alt="cover">` : '🎵'}
-                        </div>
-                        <div class="track-name" title="${track.title}">${track.title}</div>
-                        <div class="track-artist" title="${track.user.name}">${track.user.name}</div>
-                        <div class="track-actions">
-                            <button class="${isFav ? 'fav-active' : ''}" onclick="toggleFavWave(${track.id})">${isFav ? '❤️' : '🤍'}</button>
-                        </div>
+                
+                container.innerHTML += `
+                    <div class="track-card" onclick="playTrack(${track.id})">
+                        <img class="track-cover" src="${coverUrl || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\'><rect width=\'150\' height=\'150\' fill=\'%23333\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'50\'>🎵</text></svg>'}">
+                        <div class="track-name">${track.title}</div>
+                        <div class="track-artist">${track.user.name}</div>
                     </div>
                 `;
             });
-
-            // Сохраняем текущий плейлист волны в память
-            window.currentWave = waveTracks;
-
         } catch (error) {
-            list.innerHTML = '<div class="loader" style="color: red;">Ошибка загрузки. Проверьте интернет.</div>';
-            console.error(error);
-        }
-    }
-
-    // --- ИЗБРАННОЕ ---
-    function toggleFavWave(trackId) {
-        const track = window.currentWave.find(t => t.id === trackId);
-        const favs = users[currentUser].favorites;
-        const index = favs.findIndex(f => f.id === trackId);
-
-        if (index === -1) {
-            favs.push(track); // Добавляем
-        } else {
-            favs.splice(index, 1); // Удаляем
-        }
-        
-        saveData();
-        loadWave(); // Перерисовываем сердечки
-        if (document.getElementById('fav-screen').classList.contains('hidden') === false) {
-            renderFavorites();
+            container.innerHTML = '<div class="loader" style="color: red;">Ошибка сети. Попробуйте позже.</div>';
         }
     }
 
     function renderFavorites() {
-        const list = document.getElementById('fav-list');
-        list.innerHTML = '';
+        const container = document.getElementById('tracks-container');
         const favs = users[currentUser].favorites || [];
+        container.innerHTML = '';
 
         if (favs.length === 0) {
-            list.innerHTML = '<p style="color: #888;">Пока пусто. Добавьте треки из "Моей волны".</p>';
+            container.innerHTML = '<p style="color: #888; grid-column: 1/-1;">Пока пусто. Добавьте треки из "Моей волны".</p>';
             return;
         }
 
-        favs.forEach((track, index) => {
-            list.innerHTML += `
-                <div class="track-card">
-                    <div class="track-cover" onclick="playFromFav(${index})">
-                        ${track.cover ? `<img src="${track.cover}">` : '🎵'}
-                    </div>
-                    <div class="track-name" title="${track.name}">${track.name}</div>
-                    <div class="track-artist" title="${track.artist}">${track.artist}</div>
-                    <div class="track-actions">
-                        <button class="fav-active" onclick="removeFav(${index})">❤️</button>
-                    </div>
+        favs.forEach(track => {
+            container.innerHTML += `
+                <div class="track-card" onclick="playTrack('${track.id}')">
+                    <img class="track-cover" src="${track.cover || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\'><rect width=\'150\' height=\'150\' fill=\'%23333\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'50\'>🎵</text></svg>'}">
+                    <div class="track-name">${track.name}</div>
+                    <div class="track-artist">${track.artist}</div>
                 </div>
             `;
         });
     }
 
-    function removeFav(index) {
-        users[currentUser].favorites.splice(index, 1);
-        saveData();
-        renderFavorites();
-    }
+    // --- ПЛЕЕР (Экран "Сейчас играет") ---
+    function playTrack(trackId) {
+        if (currentView === 'wave') {
+            currentPlaylist = window.currentWave;
+        } else {
+            currentPlaylist = users[currentUser].favorites;
+        }
 
-    // --- ПЛЕЕР ---
-    function playFromWave(trackId) {
-        const track = window.currentWave.find(t => t.id === trackId);
-        currentPlaylist = window.currentWave;
-        currentTrackIndex = currentPlaylist.findIndex(t => t.id === trackId);
-        loadAndPlay();
-    }
+        // Ищем индекс трека (id может быть числом или строкой)
+        currentTrackIndex = currentPlaylist.findIndex(t => String(t.id) === String(trackId));
+        
+        if (currentTrackIndex === -1) return;
 
-    function playFromFav(index) {
-        currentPlaylist = users[currentUser].favorites;
-        currentTrackIndex = index;
         loadAndPlay();
     }
 
@@ -340,18 +321,28 @@
         const track = currentPlaylist[currentTrackIndex];
         if (!track) return;
 
-        document.getElementById('player-title').innerText = track.name;
-        document.getElementById('player-artist').innerText = track.artist;
+        // 1. Переключаем экран на "Now Playing"
+        document.getElementById('lists-screen').classList.add('hidden');
+        document.getElementById('now-playing-screen').classList.add('active');
+
+        // 2. Заполняем данные
+        document.getElementById('huge-artist').innerText = track.artist;
+        document.getElementById('panel-title').innerText = track.name;
+        document.getElementById('big-cover').src = track.cover || '';
         
-        const coverBox = document.getElementById('player-cover');
+        // 3. Красим фон в цвет обложки (или ставим саму обложку)
         if (track.cover) {
-            coverBox.innerHTML = `<img src="${track.cover}">`;
+            document.getElementById('bg-glow').style.backgroundImage = `url('${track.cover}')`;
         } else {
-            coverBox.innerHTML = '🎵';
+            document.getElementById('bg-glow').style.backgroundImage = 'linear-gradient(45deg, #ffdb4d, #ff4500)';
         }
 
+        // 4. Проверяем избранное
+        updateFavIcon(track.id);
+
+        // 5. Играем
         audio.src = track.url;
-        audio.play().catch(e => console.log("Ошибка воспроизведения:", e));
+        audio.play().catch(e => console.log("Ошибка аудио:", e));
         isPlaying = true;
         document.getElementById('play-pause-btn').innerText = '⏸';
     }
@@ -373,26 +364,54 @@
             currentTrackIndex++;
             loadAndPlay();
         } else {
-            // Если плейлист закончился, включаем следующую волну
-            if (currentPlaylist === window.currentWave) {
+            // Если волна закончилась - грузим новую
+            if (currentView === 'wave') {
                 loadWave().then(() => {
-                    // Автоматически включаем первый трек из новой волны
-                    setTimeout(() => {
-                        if(window.currentWave.length > 0) playFromWave(window.currentWave[0].id);
-                    }, 1000);
+                    setTimeout(() => { if(window.currentWave.length) playTrack(window.currentWave[0].id); }, 500);
                 });
             }
         }
     }
 
-    function contactSupport() {
-        window.location.href = "mailto:support@moto-site.ru?subject=Вопрос в поддержку";
+    function prevTrack() {
+        if (currentTrackIndex > 0) {
+            currentTrackIndex--;
+            loadAndPlay();
+        }
     }
 
-    // Переключение меню
-    document.getElementById('menu-wave').onclick = () => { showScreen('wave-screen'); loadWave(); };
-    document.getElementById('menu-fav').onclick = () => { showScreen('fav-screen'); renderFavorites(); };
-    document.getElementById('menu-settings').onclick = () => { showScreen('settings-screen'); };
+    // --- ИЗБРАННОЕ ---
+    function toggleFavCurrent() {
+        const track = currentPlaylist[currentTrackIndex];
+        if (!track) return;
+
+        const favs = users[currentUser].favorites;
+        const index = favs.findIndex(f => String(f.id) === String(track.id));
+
+        if (index === -1) favs.push(track);
+        else favs.splice(index, 1);
+
+        saveData();
+        updateFavIcon(track.id);
+        
+        // Если мы в меню избранного, обновим список
+        if (currentView === 'fav') renderFavorites();
+    }
+
+    function updateFavIcon(trackId) {
+        const isFav = users[currentUser].favorites.some(f => String(f.id) === String(trackId));
+        document.getElementById('fav-current-btn').innerText = isFav ? '❤️' : '🤍';
+        document.getElementById('fav-current-btn').style.color = isFav ? '#ff4500' : '#fff';
+    }
+
+    // --- ВОЗВРАТ К СПИСКАМ ---
+    // Если нажать на пустое место на экране "Now Playing", вернемся назад
+    document.getElementById('now-playing-screen').addEventListener('click', function(e) {
+        if (e.target === this || e.target.classList.contains('bg-glow') || e.target.classList.contains('bg-overlay')) {
+            this.classList.remove('active');
+            document.getElementById('lists-screen').classList.remove('hidden');
+        }
+    });
 
 </script>
 
