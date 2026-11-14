@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Моя Музыка</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
-    
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, sans-serif; }
         body { background: #000; color: #fff; height: 100vh; display: flex; overflow: hidden; }
@@ -23,7 +23,7 @@
         /* --- ГЛАВНАЯ ОБЛАСТЬ --- */
         .main-area { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
 
-        /* --- ЭКРАН "NOW PLAYING" (Точь-в-точь как на фото) --- */
+        /* --- ЭКРАН "NOW PLAYING" --- */
         .now-playing-screen {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -31,18 +31,15 @@
         }
         .now-playing-screen.active { opacity: 1; pointer-events: auto; }
 
-        /* Размытый фиолетовый фон (свечение) */
         .bg-glow {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background-size: cover; background-position: center;
-            filter: blur(100px) brightness(0.8) saturate(1.5); /* Усиливаем неон */
+            filter: blur(100px) brightness(0.8) saturate(1.5);
             z-index: -2;
             transition: background-image 0.5s;
         }
-        /* Затемнение поверх свечения */
         .bg-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: -1; }
 
-        /* Огромное имя артиста */
         .huge-artist {
             font-size: 8vw; font-weight: 900; text-align: center; letter-spacing: -3px;
             color: #fff; margin-bottom: 30px;
@@ -51,14 +48,12 @@
             position: relative; z-index: 1;
         }
 
-        /* Обложка */
         .big-cover {
             width: 240px; height: 240px; border-radius: 8px; object-fit: cover;
             box-shadow: 0 15px 50px rgba(0,0,0,0.6); margin-bottom: 40px;
             background: #222; position: relative; z-index: 1;
         }
 
-        /* Плашка с названием трека и сердечком */
         .player-panel {
             background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(15px);
             border-radius: 30px; padding: 8px 20px; display: flex; align-items: center; gap: 15px;
@@ -66,27 +61,26 @@
             width: 80%; max-width: 400px; justify-content: space-between;
             position: relative; z-index: 1;
         }
-        .panel-title { font-size: 18px; font-weight: bold; flex: 1; text-align: center; }
+        .panel-title { font-size: 18px; font-weight: bold; flex: 1; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .icon-btn { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; opacity: 0.8; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .icon-btn:hover { opacity: 1; color: #ffdb4d; }
 
-        /* Кнопки плей/пауза */
         .controls { display: flex; align-items: center; gap: 40px; position: relative; z-index: 1; }
-        
+
         .big-play-btn {
             width: 70px; height: 70px; border-radius: 50%; background: rgba(255,255,255,0.2);
             border: none; color: #fff; font-size: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center;
             transition: 0.2s; backdrop-filter: blur(10px);
         }
         .big-play-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
-        
+
         .ctrl-btn { background: none; border: none; color: #ccc; font-size: 32px; cursor: pointer; transition: 0.2s; opacity: 0.7; }
         .ctrl-btn:hover { color: #fff; opacity: 1; }
 
         /* --- СПИСКИ ТРЕКОВ --- */
         .lists-screen { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; padding: 40px; background: #000; z-index: 20; transition: transform 0.3s; }
         .lists-screen.hidden { transform: translateX(-100%); }
-        
+
         .header-title { font-size: 32px; font-weight: bold; margin-bottom: 20px; }
         .tracks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
         .track-card { background: #111; padding: 15px; border-radius: 12px; cursor: pointer; transition: 0.2s; }
@@ -100,11 +94,13 @@
         .auth-box h2 { margin-bottom: 20px; color: #ffdb4d; text-align: center; }
         .auth-box input { width: 100%; padding: 12px; margin-bottom: 10px; background: #222; border: 1px solid #333; border-radius: 8px; color: #fff; }
         .auth-box button { width: 100%; padding: 12px; background: #ffdb4d; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .error { color: #ff5252; text-align: center; margin-bottom: 10px; font-size: 14px; }
+        .error { color: #ff5252; text-align: center; margin-bottom: 10px; font-size: 14px; min-height: 18px; }
         .link-btn { background: none; border: none; color: #aaa; cursor: pointer; text-decoration: underline; margin-top: 15px; width: 100%; font-size: 14px; }
-        
+
         .hidden { display: none !important; }
         .loader { text-align: center; color: #ffdb4d; font-size: 18px; margin-top: 50px; grid-column: 1 / -1; }
+        .loader.error { color: #ff5252; }
+        .empty { color: #888; grid-column: 1/-1; }
         audio { display: none; }
     </style>
 </head>
@@ -122,280 +118,486 @@
     <div class="main-area">
 
         <!-- АВТОРИЗАЦИЯ -->
-        <div id="auth-screen" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #000; display: flex; justify-content: center; align-items: center;">
-            <div class="auth-box" style="margin: 0;">
+        <div id="auth-screen" class="auth-overlay">
+            <div class="auth-box">
                 <h2>Вход в систему</h2>
                 <div id="auth-error" class="error"></div>
-                <input type="text" id="username" placeholder="Логин">
-                <input type="password" id="password" placeholder="Пароль">
-                <button onclick="login()">Войти</button>
-                <button class="link-btn" onclick="document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('register-screen').classList.remove('hidden');">Нет аккаунта? Регистрация</button>
+                <input type="text" id="username" placeholder="Логин" autocomplete="username">
+                <input type="password" id="password" placeholder="Пароль" autocomplete="current-password">
+                <button id="btn-login">Войти</button>
+                <button class="link-btn" id="btn-to-register">Нет аккаунта? Регистрация</button>
             </div>
         </div>
 
-        <div id="register-screen" class="hidden" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #000; display: flex; justify-content: center; align-items: center;">
-            <div class="auth-box" style="margin: 0;">
+        <div id="register-screen" class="auth-overlay hidden">
+            <div class="auth-box">
                 <h2>Регистрация</h2>
                 <div id="reg-error" class="error"></div>
-                <input type="text" id="reg-username" placeholder="Логин">
-                <input type="password" id="reg-password" placeholder="Пароль">
-                <input type="email" id="reg-email" placeholder="Email">
-                <button onclick="register()">Создать аккаунт</button>
-                <button class="link-btn" onclick="document.getElementById('register-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.remove('hidden');">Назад</button>
+                <input type="text" id="reg-username" placeholder="Логин" autocomplete="username">
+                <input type="password" id="reg-password" placeholder="Пароль" autocomplete="new-password">
+                <input type="email" id="reg-email" placeholder="Email" autocomplete="email">
+                <button id="btn-register">Создать аккаунт</button>
+                <button class="link-btn" id="btn-to-login">Назад</button>
             </div>
         </div>
 
         <!-- СПИСКИ ТРЕКОВ -->
-        <div id="lists-screen" class="lists-screen">
+        <div id="lists-screen" class="lists-screen hidden">
             <div class="header-title" id="list-title">Моя волна 🌊</div>
             <div class="tracks-grid" id="tracks-container"></div>
         </div>
 
-        <!-- ЭКРАН "СЕЙЧАС ИГРАЕТ" (КАК НА ФОТО) -->
+        <!-- ЭКРАН "СЕЙЧАС ИГРАЕТ" -->
         <div id="now-playing-screen" class="now-playing-screen">
             <div class="bg-glow" id="bg-glow"></div>
             <div class="bg-overlay"></div>
-            
+
             <div class="huge-artist" id="huge-artist">Исполнитель</div>
-            
-            <img src="" id="big-cover" class="big-cover" alt="Обложка" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'240\' height=\'240\'><rect width=\'240\' height=\'240\' fill=\'%23333\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'80\'>🎵</text></svg>'">
-            
-            <!-- Плашка как в Яндексе -->
+
+            <img src="" id="big-cover" class="big-cover" alt="Обложка трека">
+
             <div class="player-panel">
-                <button class="icon-btn" onclick="toggleFavCurrent()" id="fav-current-btn" title="В избранное">🤍</button>
+                <button class="icon-btn" id="fav-current-btn" title="В избранное">🤍</button>
                 <div class="panel-title" id="panel-title">Название трека</div>
                 <button class="icon-btn" style="font-size: 16px;">•••</button>
             </div>
 
-            <!-- Кнопки управления -->
             <div class="controls">
-                <button class="ctrl-btn" onclick="prevTrack()">⏮</button>
-                <button class="big-play-btn" id="play-pause-btn" onclick="togglePlay()">⏸</button>
-                <button class="ctrl-btn" onclick="nextTrack()">⏭</button>
+                <button class="ctrl-btn" id="btn-prev">⏮</button>
+                <button class="big-play-btn" id="play-pause-btn">⏸</button>
+                <button class="ctrl-btn" id="btn-next">⏭</button>
             </div>
         </div>
 
     </div>
 
     <!-- АУДИО -->
-    <audio id="audio-player" onended="nextTrack()"></audio>
+    <audio id="audio-player"></audio>
 
 <script>
-    let users = JSON.parse(localStorage.getItem('myAppUsers')) || {};
-    let currentUser = null;
-    
-    let currentPlaylist = [];
-    let currentTrackIndex = -1;
-    let isPlaying = false;
-    let currentView = 'wave';
+(() => {
+    'use strict';
 
-    const audio = document.getElementById('audio-player');
+    // ---------- Константы ----------
+    const STORAGE_KEY = 'myAppUsers_v2';
+    const AUDIUS_BASE = 'https://discoveryprovider.audius.co/v1';
+    const APP_NAME = 'MyMotoApp';
+    const PLACEHOLDER_COVER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><rect width='240' height='240' fill='%23333'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='80'>🎵</text></svg>";
 
-    function register() {
-        const u = document.getElementById('reg-username').value.trim();
-        const p = document.getElementById('reg-password').value;
-        const email = document.getElementById('reg-email').value.trim();
-        
-        if (!u || !p || !email) return document.getElementById('reg-error').innerText = 'Заполните все поля!';
-        if (users[u]) return document.getElementById('reg-error').innerText = 'Логин занят';
-        
-        users[u] = { password: p, email: email, favorites: [] };
-        saveData();
-        alert('Успешно! Войдите.');
-        document.getElementById('register-screen').classList.add('hidden');
-        document.getElementById('auth-screen').classList.remove('hidden');
+    // ---------- DOM ----------
+    const $ = (id) => document.getElementById(id);
+    const authScreen = $('auth-screen');
+    const registerScreen = $('register-screen');
+    const listsScreen = $('lists-screen');
+    const nowPlayingScreen = $('now-playing-screen');
+    const tracksContainer = $('tracks-container');
+    const audio = $('audio-player');
+
+    // ---------- Состояние ----------
+    const state = {
+        users: {},
+        currentUser: null,
+        playlist: [],
+        trackIndex: -1,
+        isPlaying: false,
+        view: 'wave', // 'wave' | 'fav'
+    };
+
+    // ---------- Хранилище ----------
+    function loadUsers() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            state.users = raw ? JSON.parse(raw) : {};
+            if (typeof state.users !== 'object' || state.users === null) state.users = {};
+        } catch (e) {
+            console.warn('Не удалось прочитать хранилище, сбрасываю:', e);
+            state.users = {};
+        }
     }
-
-    function login() {
-        const u = document.getElementById('username').value.trim();
-        const p = document.getElementById('password').value;
-        
-        if (users[u] && users[u].password === p) {
-            currentUser = u;
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('lists-screen').classList.remove('hidden');
-            loadWave();
-        } else {
-            document.getElementById('auth-error').innerText = 'Неверный логин или пароль';
+    function saveUsers() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state.users));
+        } catch (e) {
+            console.error('Не удалось сохранить данные:', e);
         }
     }
 
-    function logout() {
-        currentUser = null;
-        audio.pause();
-        document.getElementById('now-playing-screen').classList.remove('active');
-        document.getElementById('lists-screen').classList.add('hidden');
-        document.getElementById('auth-screen').classList.remove('hidden');
+    // ---------- Хеширование пароля (PBKDF2 + соль) ----------
+    function toHex(buf) {
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    function randomSalt() {
+        return toHex(crypto.getRandomValues(new Uint8Array(16)));
+    }
+    async function hashPassword(password, saltHex) {
+        const enc = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey(
+            'raw', enc.encode(password), { name: 'PBKDF2' }, false, ['deriveBits']
+        );
+        const salt = Uint8Array.from(saltHex.match(/.{2}/g).map(h => parseInt(h, 16)));
+        const bits = await crypto.subtle.deriveBits(
+            { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+            keyMaterial, 256
+        );
+        return toHex(bits);
+    }
+    function timingSafeEqual(a, b) {
+        if (a.length !== b.length) return false;
+        let diff = 0;
+        for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+        return diff === 0;
     }
 
-    function saveData() { localStorage.setItem('myAppUsers', JSON.stringify(users)); }
+    // ---------- UI-хелперы ----------
+    function showError(el, msg) { el.textContent = msg || ''; }
+    function setScreen(screen) {
+        authScreen.classList.toggle('hidden', screen !== 'auth');
+        registerScreen.classList.toggle('hidden', screen !== 'register');
+        if (screen !== 'auth' && screen !== 'register') {
+            authScreen.classList.add('hidden');
+            registerScreen.classList.add('hidden');
+        }
+    }
+    function requireUser() {
+        if (!state.currentUser || !state.users[state.currentUser]) return false;
+        return true;
+    }
 
-    document.getElementById('nav-wave').onclick = () => { 
-        currentView = 'wave'; 
-        document.getElementById('list-title').innerText = "Моя волна 🌊";
-        document.getElementById('lists-screen').classList.remove('hidden');
-        loadWave(); 
-    };
-    document.getElementById('nav-fav').onclick = () => { 
-        currentView = 'fav'; 
-        document.getElementById('list-title').innerText = "Избранное ❤️";
-        document.getElementById('lists-screen').classList.remove('hidden');
-        renderFavorites(); 
-    };
-    document.getElementById('nav-logout').onclick = logout;
+    // ---------- Безопасный рендер карточки трека ----------
+    function createTrackCard(track, onClick) {
+        const card = document.createElement('div');
+        card.className = 'track-card';
+        card.addEventListener('click', onClick);
 
-    // --- API Audius ---
+        const img = document.createElement('img');
+        img.className = 'track-cover';
+        img.alt = track.name ? `Обложка: ${track.name}` : 'Обложка';
+        img.src = track.cover || PLACEHOLDER_COVER;
+        img.addEventListener('error', () => { img.src = PLACEHOLDER_COVER; }, { once: true });
+
+        const name = document.createElement('div');
+        name.className = 'track-name';
+        name.textContent = track.name || 'Без названия';
+
+        const artist = document.createElement('div');
+        artist.className = 'track-artist';
+        artist.textContent = track.artist || 'Неизвестный исполнитель';
+
+        card.append(img, name, artist);
+        return card;
+    }
+
+    // ---------- API ----------
+    async function fetchWave() {
+        const url = `${AUDIUS_BASE}/tracks/trending?app_name=${encodeURIComponent(APP_NAME)}&limit=15`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        return (data.data || []).map(track => ({
+            id: track.id,
+            name: track.title,
+            artist: track.user?.name || '',
+            cover: track.artwork ? track.artwork['150x150'] : '',
+            url: `${AUDIUS_BASE}/tracks/${track.id}/stream?app_name=${encodeURIComponent(APP_NAME)}`,
+        }));
+    }
+
     async function loadWave() {
-        const container = document.getElementById('tracks-container');
-        container.innerHTML = '<div class="loader">🌊 Подбираем треки...</div>';
+        tracksContainer.replaceChildren();
+        const loader = document.createElement('div');
+        loader.className = 'loader';
+        loader.textContent = '🌊 Подбираем треки...';
+        tracksContainer.appendChild(loader);
 
         try {
-            const response = await fetch('https://discoveryprovider.audius.co/v1/tracks/trending?app_name=MyMotoApp&limit=15');
-            const data = await response.json();
-            
-            container.innerHTML = '';
-            window.currentWave = [];
-
-            data.data.forEach(track => {
-                const coverUrl = track.artwork ? track.artwork['150x150'] : '';
-                const streamUrl = `https://discoveryprovider.audius.co/v1/tracks/${track.id}/stream?app_name=MyMotoApp`;
-                
-                const trackData = {
-                    id: track.id, name: track.title, artist: track.user.name, cover: coverUrl, url: streamUrl
-                };
-                window.currentWave.push(trackData);
-
-                container.innerHTML += `
-                    <div class="track-card" onclick="playTrack(${track.id})">
-                        <img class="track-cover" src="${coverUrl || ''}">
-                        <div class="track-name">${track.title}</div>
-                        <div class="track-artist">${track.user.name}</div>
-                    </div>
-                `;
-            });
-        } catch (error) {
-            container.innerHTML = '<div class="loader" style="color: red;">Ошибка загрузки.</div>';
+            const tracks = await fetchWave();
+            tracksContainer.replaceChildren();
+            if (!tracks.length) {
+                const empty = document.createElement('p');
+                empty.className = 'empty';
+                empty.textContent = 'Треки не найдены.';
+                tracksContainer.appendChild(empty);
+                return tracks;
+            }
+            for (const track of tracks) {
+                tracksContainer.appendChild(createTrackCard(track, () => playTrack(track.id)));
+            }
+            return tracks;
+        } catch (e) {
+            console.error('loadWave:', e);
+            tracksContainer.replaceChildren();
+            const err = document.createElement('div');
+            err.className = 'loader error';
+            err.textContent = 'Ошибка загрузки.';
+            tracksContainer.appendChild(err);
+            return [];
         }
+    }
+
+    // ---------- Избранное ----------
+    function getFavorites() {
+        return requireUser() ? (state.users[state.currentUser].favorites || []) : [];
     }
 
     function renderFavorites() {
-        const container = document.getElementById('tracks-container');
-        const favs = users[currentUser].favorites || [];
-        container.innerHTML = '';
+        tracksContainer.replaceChildren();
+        if (!requireUser()) return;
 
-        if (favs.length === 0) {
-            container.innerHTML = '<p style="color: #888; grid-column: 1/-1;">Пока пусто.</p>';
+        const favs = getFavorites();
+        if (!favs.length) {
+            const empty = document.createElement('p');
+            empty.className = 'empty';
+            empty.textContent = 'Пока пусто.';
+            tracksContainer.appendChild(empty);
             return;
         }
-
-        favs.forEach(track => {
-            container.innerHTML += `
-                <div class="track-card" onclick="playTrack('${track.id}')">
-                    <img class="track-cover" src="${track.cover || ''}">
-                    <div class="track-name">${track.name}</div>
-                    <div class="track-artist">${track.artist}</div>
-                </div>
-            `;
-        });
+        for (const track of favs) {
+            tracksContainer.appendChild(createTrackCard(track, () => playTrack(track.id)));
+        }
     }
 
+    // ---------- Плеер ----------
     function playTrack(trackId) {
-        if (currentView === 'wave') currentPlaylist = window.currentWave;
-        else currentPlaylist = users[currentUser].favorites;
+        if (!requireUser()) return;
 
-        currentTrackIndex = currentPlaylist.findIndex(t => String(t.id) === String(trackId));
-        if (currentTrackIndex === -1) return;
+        const source = state.view === 'wave'
+            ? state.playlist.length ? state.playlist : []
+            : getFavorites();
 
+        // Для 'wave' плейлист уже установлен в loadWave -> state.playlist
+        // Если playlist пуст (например, только что залогинились), берём из текущего view.
+        let playlist = source;
+        if (state.view === 'wave' && (!playlist || !playlist.length)) {
+            // фолбэк: попробуем найти в избранном? нет — просто выходим
+            return;
+        }
+        if (state.view === 'fav') playlist = getFavorites();
+
+        const index = playlist.findIndex(t => String(t.id) === String(trackId));
+        if (index === -1) return;
+
+        state.playlist = playlist.slice(); // копия, чтобы не зависеть от мутаций источника
+        state.trackIndex = index;
         loadAndPlay();
     }
 
     function loadAndPlay() {
-        const track = currentPlaylist[currentTrackIndex];
+        if (!requireUser()) return;
+        const track = state.playlist[state.trackIndex];
         if (!track) return;
 
-        // Включаем полноэкранный режим
-        document.getElementById('lists-screen').classList.add('hidden');
-        document.getElementById('now-playing-screen').classList.add('active');
+        listsScreen.classList.add('hidden');
+        nowPlayingScreen.classList.add('active');
 
-        // Заполняем данные
-        document.getElementById('huge-artist').innerText = track.artist;
-        document.getElementById('panel-title').innerText = track.name;
-        document.getElementById('big-cover').src = track.cover || '';
-        
-        // Красим фон
-        if (track.cover) {
-            document.getElementById('bg-glow').style.backgroundImage = `url('${track.cover}')`;
-        }
+        $('huge-artist').textContent = track.artist || '';
+        $('panel-title').textContent = track.name || '';
+        $('big-cover').src = track.cover || PLACEHOLDER_COVER;
+        $('big-cover').alt = track.name ? `Обложка: ${track.name}` : 'Обложка';
+
+        const glow = $('bg-glow');
+        glow.style.backgroundImage = track.cover ? `url("${encodeURI(track.cover)}")` : 'none';
 
         updateFavIcon(track.id);
 
         audio.src = track.url;
-        audio.play().catch(e => console.log("Ошибка аудио:", e));
-        isPlaying = true;
-        document.getElementById('play-pause-btn').innerText = '⏸';
+        audio.play().then(() => {
+            state.isPlaying = true;
+            $('play-pause-btn').textContent = '⏸';
+        }).catch(err => {
+            console.warn('Не удалось воспроизвести:', err);
+            state.isPlaying = false;
+            $('play-pause-btn').textContent = '▶';
+        });
     }
 
     function togglePlay() {
         if (!audio.src) return;
-        if (isPlaying) {
+        if (state.isPlaying) {
             audio.pause();
-            document.getElementById('play-pause-btn').innerText = '▶';
+            $('play-pause-btn').textContent = '▶';
+            state.isPlaying = false;
         } else {
-            audio.play();
-            document.getElementById('play-pause-btn').innerText = '⏸';
+            audio.play().then(() => {
+                $('play-pause-btn').textContent = '⏸';
+                state.isPlaying = true;
+            }).catch(err => console.warn('play:', err));
         }
-        isPlaying = !isPlaying;
     }
 
     function nextTrack() {
-        if (currentTrackIndex < currentPlaylist.length - 1) {
-            currentTrackIndex++;
+        if (!state.playlist.length) return;
+        if (state.trackIndex < state.playlist.length - 1) {
+            state.trackIndex++;
             loadAndPlay();
-        } else {
-            if (currentView === 'wave') {
-                loadWave().then(() => {
-                    setTimeout(() => { if(window.currentWave.length) playTrack(window.currentWave[0].id); }, 500);
-                });
-            }
+        } else if (state.view === 'wave') {
+            loadWave().then(tracks => {
+                state.playlist = tracks.slice();
+                if (state.playlist.length) {
+                    state.trackIndex = 0;
+                    loadAndPlay();
+                }
+            });
         }
     }
 
     function prevTrack() {
-        if (currentTrackIndex > 0) {
-            currentTrackIndex--;
+        if (state.trackIndex > 0) {
+            state.trackIndex--;
             loadAndPlay();
         }
     }
 
+    // ---------- Избранное: переключение ----------
     function toggleFavCurrent() {
-        const track = currentPlaylist[currentTrackIndex];
+        if (!requireUser()) return;
+        const track = state.playlist[state.trackIndex];
         if (!track) return;
 
-        const favs = users[currentUser].favorites;
+        const favs = state.users[state.currentUser].favorites || (state.users[state.currentUser].favorites = []);
         const index = favs.findIndex(f => String(f.id) === String(track.id));
 
         if (index === -1) favs.push(track);
         else favs.splice(index, 1);
 
-        saveData();
+        saveUsers();
         updateFavIcon(track.id);
-        if (currentView === 'fav') renderFavorites();
+        if (state.view === 'fav') renderFavorites();
     }
 
     function updateFavIcon(trackId) {
-        const isFav = users[currentUser].favorites.some(f => String(f.id) === String(trackId));
-        document.getElementById('fav-current-btn').innerText = isFav ? '❤️' : '🤍';
-        document.getElementById('fav-current-btn').style.color = isFav ? '#ff4500' : '#fff';
+        if (!requireUser()) return;
+        const isFav = getFavorites().some(f => String(f.id) === String(trackId));
+        const btn = $('fav-current-btn');
+        btn.textContent = isFav ? '❤️' : '🤍';
+        btn.style.color = isFav ? '#ff4500' : '#fff';
     }
 
-    // Возврат к списку по клику на фон
-    document.getElementById('now-playing-screen').addEventListener('click', function(e) {
+    // ---------- Авторизация ----------
+    async function register() {
+        const u = $('reg-username').value.trim();
+        const p = $('reg-password').value;
+        const email = $('reg-email').value.trim();
+        const errEl = $('reg-error');
+        showError(errEl, '');
+
+        if (!u || !p || !email) return showError(errEl, 'Заполните все поля!');
+        if (u.length < 3) return showError(errEl, 'Логин минимум 3 символа');
+        if (p.length < 6) return showError(errEl, 'Пароль минимум 6 символов');
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError(errEl, 'Некорректный email');
+        if (state.users[u]) return showError(errEl, 'Логин занят');
+
+        try {
+            const salt = randomSalt();
+            const hash = await hashPassword(p, salt);
+            state.users[u] = { salt, hash, email, favorites: [] };
+            saveUsers();
+            alert('Успешно! Войдите.');
+            setScreen('auth');
+            $('reg-username').value = '';
+            $('reg-password').value = '';
+            $('reg-email').value = '';
+        } catch (e) {
+            console.error('register:', e);
+            showError(errEl, 'Не удалось создать аккаунт');
+        }
+    }
+
+    async function login() {
+        const u = $('username').value.trim();
+        const p = $('password').value;
+        const errEl = $('auth-error');
+        showError(errEl, '');
+
+        const record = state.users[u];
+        if (!record) return showError(errEl, 'Неверный логин или пароль');
+
+        try {
+            const hash = await hashPassword(p, record.salt);
+            if (!timingSafeEqual(hash, record.hash)) {
+                return showError(errEl, 'Неверный логин или пароль');
+            }
+            state.currentUser = u;
+            $('password').value = '';
+            setScreen(null);
+            listsScreen.classList.remove('hidden');
+            state.view = 'wave';
+            $('list-title').textContent = 'Моя волна 🌊';
+            setActiveNav('nav-wave');
+            state.playlist = await loadWave();
+            state.playlist = state.playlist.slice();
+        } catch (e) {
+            console.error('login:', e);
+            showError(errEl, 'Ошибка входа');
+        }
+    }
+
+    function logout() {
+        state.currentUser = null;
+        state.playlist = [];
+        state.trackIndex = -1;
+        state.isPlaying = false;
+        audio.pause();
+        audio.removeAttribute('src');
+        audio.load();
+        nowPlayingScreen.classList.remove('active');
+        listsScreen.classList.add('hidden');
+        setScreen('auth');
+        showError($('auth-error'), '');
+        setActiveNav(null);
+    }
+
+    function setActiveNav(id) {
+        document.querySelectorAll('.sidebar .nav-icon').forEach(el => el.classList.remove('active'));
+        if (id) $(id)?.classList.add('active');
+    }
+
+    // ---------- Навигация ----------
+    $('nav-wave').addEventListener('click', async () => {
+        if (!requireUser()) return;
+        state.view = 'wave';
+        $('list-title').textContent = 'Моя волна 🌊';
+        listsScreen.classList.remove('hidden');
+        setActiveNav('nav-wave');
+        const tracks = await loadWave();
+        state.playlist = tracks.slice();
+        state.trackIndex = -1;
+    });
+
+    $('nav-fav').addEventListener('click', () => {
+        if (!requireUser()) return;
+        state.view = 'fav';
+        $('list-title').textContent = 'Избранное ❤️';
+        listsScreen.classList.remove('hidden');
+        setActiveNav('nav-fav');
+        renderFavorites();
+    });
+
+    $('nav-logout').addEventListener('click', logout);
+
+    $('btn-login').addEventListener('click', login);
+    $('btn-register').addEventListener('click', register);
+    $('btn-to-register').addEventListener('click', () => setScreen('register'));
+    $('btn-to-login').addEventListener('click', () => setScreen('auth'));
+
+    $('play-pause-btn').addEventListener('click', togglePlay);
+    $('btn-next').addEventListener('click', nextTrack);
+    $('btn-prev').addEventListener('click', prevTrack);
+    $('fav-current-btn').addEventListener('click', toggleFavCurrent);
+    audio.addEventListener('ended', nextTrack);
+
+    // Возврат к списку по клику на фон плеера
+    nowPlayingScreen.addEventListener('click', function (e) {
         if (e.target === this || e.target.classList.contains('bg-glow') || e.target.classList.contains('bg-overlay')) {
-            this.classList.remove('active');
-            document.getElementById('lists-screen').classList.remove('hidden');
+            nowPlayingScreen.classList.remove('active');
+            listsScreen.classList.remove('hidden');
         }
     });
 
+    // ---------- Инициализация ----------
+    loadUsers();
+    setScreen('auth');
+    listsScreen.classList.add('hidden');
+})();
 </script>
 
 </body>
